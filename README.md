@@ -3,7 +3,7 @@
 Zavodlar, distribyutorlar va do'konlarni bog'lovchi ulgurji B2B bozor (Oʻzbekiston bozori uchun).
 A B2B wholesale marketplace connecting factories, distributors and retail shops.
 
-> **Holat / Status:** Phase 1 + Phase 2 tayyor. Phase 1: auth (mock SMS), catalog. Phase 2: savat (cart), checkout (ko'p-zavodli bo'linish + narx/komissiya snapshotlari), buyurtma status o'tishlari (rol tekshiruvi bilan), admin tasdiqlash. Flutter ilova Phase 3 da.
+> **Holat / Status:** Phase 1 + 2 + 3 tayyor. Phase 1: auth (mock SMS), catalog. Phase 2: savat, checkout (ko'p-zavodli bo'linish + snapshotlar), status o'tishlari, admin tasdiqlash. Phase 3: **Flutter buyer ilovasi** (splash, til tanlash, auth+OTP, home, katalog, mahsulot, savat, checkout, buyurtmalar, profil). Zavod paneli + admin web Phase 4 da.
 
 ## Texnologiyalar / Stack
 
@@ -44,6 +44,29 @@ uvicorn app.main:app --reload
 ```
 
 ---
+
+## 3. Flutter buyer ilovasi (apps/mobile)
+
+Ilova bitta koddan mobil + web uchun ishlaydi. Backend ishga tushgan bo'lishi kerak (yuqoridagi 1 yoki 2). CORS `.env` da web port'ni ruxsat qilsin (dev default: `localhost:8080`).
+
+```bash
+cd apps/mobile
+flutter pub get
+# Web (Chrome) — CORS mos bo'lishi uchun 8080 portida:
+flutter run -d chrome --web-port 8080
+# API boshqa manzilda bo'lsa:
+flutter run -d chrome --web-port 8080 --dart-define=API_BASE_URL=http://localhost:8000
+```
+
+Test akkaunt bilan kirish: `+998905555555` / `shop123` (seed'dan, tasdiqlangan do'kon).
+
+```bash
+flutter analyze          # statik tahlil
+flutter test             # unit testlar
+flutter build web        # web build
+```
+
+> **Stack:** Riverpod (holat), go_router (navigatsiya + rol/auth redirect), dio (HTTP + token refresh interceptor), easy_localization (uz/ru/en). Sessiya `/auth/me` orqali tiklanadi; pending user "tasdiqlash kutilmoqda" ekraniga yo'naltiriladi.
 
 ## Test / Testlar
 

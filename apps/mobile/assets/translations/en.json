@@ -1,0 +1,114 @@
+{
+  "app_name": "Admin Market",
+  "common": {
+    "loading": "Loading...",
+    "retry": "Retry",
+    "error_generic": "Something went wrong",
+    "empty": "No data",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "search": "Search",
+    "currency": "so'm",
+    "logout": "Log out"
+  },
+  "language": {
+    "title": "Select language",
+    "uz": "Uzbek",
+    "ru": "Russian",
+    "en": "English",
+    "continue": "Continue"
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Register",
+    "phone": "Phone number",
+    "phone_hint": "+998XXXXXXXXX",
+    "password": "Password",
+    "full_name": "Full name",
+    "company_name": "Company name",
+    "role": "Role",
+    "role_shop": "Shop",
+    "role_distributor": "Distributor",
+    "role_factory": "Factory",
+    "have_account": "Have an account? Log in",
+    "no_account": "No account? Register",
+    "forgot": "Forgot password?",
+    "otp_title": "Verification code",
+    "otp_hint": "Code from SMS",
+    "otp_verify": "Verify",
+    "otp_sent": "Code sent",
+    "invalid_phone": "Phone must be in the format +998XXXXXXXXX",
+    "password_short": "Password must be at least 6 characters"
+  },
+  "pending": {
+    "title": "Pending approval",
+    "message": "You have registered. Once an administrator approves your account, you can log in.",
+    "refresh": "Refresh"
+  },
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "cart": "Cart",
+    "orders": "Orders",
+    "profile": "Profile"
+  },
+  "home": {
+    "categories": "Categories",
+    "featured": "Featured",
+    "factories": "Factories",
+    "see_all": "See all"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "search_hint": "Search products",
+    "sort": "Sort",
+    "sort_newest": "Newest",
+    "sort_price_asc": "Price: low to high",
+    "sort_price_desc": "Price: high to low",
+    "filter_category": "Category",
+    "filter_all": "All",
+    "empty": "No products found"
+  },
+  "product": {
+    "min_order": "Min order",
+    "in_stock": "In stock: {} pcs",
+    "out_of_stock": "Out of stock",
+    "add_to_cart": "Add to cart",
+    "added": "Added to cart",
+    "factory": "Factory",
+    "units": "pcs"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Cart is empty",
+    "total": "Total",
+    "checkout": "Place order",
+    "split_notice": "Order will split across {} factories",
+    "remove": "Remove",
+    "order_placed": "Order placed"
+  },
+  "orders": {
+    "title": "Orders",
+    "empty": "No orders",
+    "order_no": "Order #{}",
+    "total": "Total",
+    "commission": "Commission",
+    "items": "Items",
+    "cancel_order": "Cancel order",
+    "status": {
+      "new": "New",
+      "confirmed": "Confirmed",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "personal": "Personal info",
+    "company": "Company",
+    "language": "Language",
+    "change_password": "Change password"
+  }
+}

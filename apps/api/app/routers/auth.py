@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.deps import get_current_user
 from app.core.security import (
     REFRESH_TOKEN,
     create_access_token,
@@ -66,6 +67,12 @@ def register(payload: RegisterIn, db: Session = Depends(get_db)) -> RegisterOut:
     db.commit()
     db.refresh(user)
     return RegisterOut(user=UserOut.model_validate(user), dev_otp=code if _is_dev() else None)
+
+
+@router.get("/me", response_model=UserOut)
+def me(user: User = Depends(get_current_user)) -> User:
+    """Current authenticated user (any status) — used by clients to restore session."""
+    return user
 
 
 @router.post("/verify-otp", response_model=Message)

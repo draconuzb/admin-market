@@ -140,6 +140,25 @@ def test_password_reset_flow(client):
     )
 
 
+def test_me_returns_current_user_even_when_pending(client):
+    _register(client)
+    tokens = client.post(
+        "/api/v1/auth/login",
+        json={"phone": "+998911234567", "password": "secret123"},
+    ).json()
+    resp = client.get(
+        "/api/v1/auth/me", headers={"Authorization": f"Bearer {tokens['access']}"}
+    )
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["phone"] == "+998911234567"
+    assert body["status"] == "pending"
+
+
+def test_me_requires_auth(client):
+    assert client.get("/api/v1/auth/me").status_code == 401
+
+
 def test_reset_password_unknown_phone_does_not_leak(client):
     resp = client.post(
         "/api/v1/auth/reset-password", json={"phone": "+998999999999"}

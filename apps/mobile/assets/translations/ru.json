@@ -1,0 +1,114 @@
+{
+  "app_name": "Admin Market",
+  "common": {
+    "loading": "Загрузка...",
+    "retry": "Повторить",
+    "error_generic": "Произошла ошибка",
+    "empty": "Нет данных",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "search": "Поиск",
+    "currency": "сум",
+    "logout": "Выйти"
+  },
+  "language": {
+    "title": "Выберите язык",
+    "uz": "Узбекский",
+    "ru": "Русский",
+    "en": "Английский",
+    "continue": "Продолжить"
+  },
+  "auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "phone": "Номер телефона",
+    "phone_hint": "+998XXXXXXXXX",
+    "password": "Пароль",
+    "full_name": "Полное имя",
+    "company_name": "Название компании",
+    "role": "Роль",
+    "role_shop": "Магазин",
+    "role_distributor": "Дистрибьютор",
+    "role_factory": "Завод",
+    "have_account": "Есть аккаунт? Войти",
+    "no_account": "Нет аккаунта? Зарегистрироваться",
+    "forgot": "Забыли пароль?",
+    "otp_title": "Код подтверждения",
+    "otp_hint": "Код из SMS",
+    "otp_verify": "Подтвердить",
+    "otp_sent": "Код отправлен",
+    "invalid_phone": "Телефон должен быть в формате +998XXXXXXXXX",
+    "password_short": "Пароль минимум 6 символов"
+  },
+  "pending": {
+    "title": "Ожидает подтверждения",
+    "message": "Вы зарегистрированы. Как только администратор подтвердит аккаунт, вы сможете войти.",
+    "refresh": "Обновить"
+  },
+  "nav": {
+    "home": "Главная",
+    "catalog": "Каталог",
+    "cart": "Корзина",
+    "orders": "Заказы",
+    "profile": "Профиль"
+  },
+  "home": {
+    "categories": "Категории",
+    "featured": "Рекомендуемые",
+    "factories": "Заводы",
+    "see_all": "Все"
+  },
+  "catalog": {
+    "title": "Каталог",
+    "search_hint": "Поиск товара",
+    "sort": "Сортировка",
+    "sort_newest": "Новые",
+    "sort_price_asc": "Цена: по возрастанию",
+    "sort_price_desc": "Цена: по убыванию",
+    "filter_category": "Категория",
+    "filter_all": "Все",
+    "empty": "Товары не найдены"
+  },
+  "product": {
+    "min_order": "Мин. заказ",
+    "in_stock": "На складе: {} шт",
+    "out_of_stock": "Нет в наличии",
+    "add_to_cart": "В корзину",
+    "added": "Добавлено в корзину",
+    "factory": "Завод",
+    "units": "шт"
+  },
+  "cart": {
+    "title": "Корзина",
+    "empty": "Корзина пуста",
+    "total": "Итого",
+    "checkout": "Оформить заказ",
+    "split_notice": "Заказ разделится на {} заводов",
+    "remove": "Удалить",
+    "order_placed": "Заказ принят"
+  },
+  "orders": {
+    "title": "Заказы",
+    "empty": "Нет заказов",
+    "order_no": "Заказ #{}",
+    "total": "Итого",
+    "commission": "Комиссия",
+    "items": "Товары",
+    "cancel_order": "Отменить заказ",
+    "status": {
+      "new": "Новый",
+      "confirmed": "Подтверждён",
+      "shipped": "Отправлен",
+      "delivered": "Доставлен",
+      "cancelled": "Отменён"
+    }
+  },
+  "profile": {
+    "title": "Профиль",
+    "personal": "Личные данные",
+    "company": "Компания",
+    "language": "Язык",
+    "change_password": "Сменить пароль"
+  }
+}

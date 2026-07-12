@@ -1,0 +1,114 @@
+{
+  "app_name": "Admin Market",
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "retry": "Qayta urinish",
+    "error_generic": "Xatolik yuz berdi",
+    "empty": "Ma'lumot yo'q",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "confirm": "Tasdiqlash",
+    "search": "Qidirish",
+    "currency": "so'm",
+    "logout": "Chiqish"
+  },
+  "language": {
+    "title": "Tilni tanlang",
+    "uz": "O'zbekcha",
+    "ru": "Ruscha",
+    "en": "Inglizcha",
+    "continue": "Davom etish"
+  },
+  "auth": {
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+    "phone": "Telefon raqami",
+    "phone_hint": "+998XXXXXXXXX",
+    "password": "Parol",
+    "full_name": "To'liq ism",
+    "company_name": "Kompaniya nomi",
+    "role": "Rol",
+    "role_shop": "Do'kon",
+    "role_distributor": "Distribyutor",
+    "role_factory": "Zavod",
+    "have_account": "Akkauntingiz bormi? Kirish",
+    "no_account": "Akkaunt yo'qmi? Ro'yxatdan o'ting",
+    "forgot": "Parolni unutdingizmi?",
+    "otp_title": "Tasdiqlash kodi",
+    "otp_hint": "SMS orqali kelgan kod",
+    "otp_verify": "Tasdiqlash",
+    "otp_sent": "Kod yuborildi",
+    "invalid_phone": "Telefon +998XXXXXXXXX ko'rinishida bo'lishi kerak",
+    "password_short": "Parol kamida 6 ta belgi"
+  },
+  "pending": {
+    "title": "Tasdiqlash kutilmoqda",
+    "message": "Ro'yxatdan o'tdingiz. Administrator akkauntingizni tasdiqlagach, kirishingiz mumkin bo'ladi.",
+    "refresh": "Yangilash"
+  },
+  "nav": {
+    "home": "Bosh sahifa",
+    "catalog": "Katalog",
+    "cart": "Savat",
+    "orders": "Buyurtmalar",
+    "profile": "Profil"
+  },
+  "home": {
+    "categories": "Kategoriyalar",
+    "featured": "Tavsiya etilgan",
+    "factories": "Zavodlar",
+    "see_all": "Barchasi"
+  },
+  "catalog": {
+    "title": "Katalog",
+    "search_hint": "Mahsulot qidirish",
+    "sort": "Saralash",
+    "sort_newest": "Yangi",
+    "sort_price_asc": "Narx: arzondan",
+    "sort_price_desc": "Narx: qimmatdan",
+    "filter_category": "Kategoriya",
+    "filter_all": "Barchasi",
+    "empty": "Mahsulot topilmadi"
+  },
+  "product": {
+    "min_order": "Minimal buyurtma",
+    "in_stock": "Omborda: {} dona",
+    "out_of_stock": "Omborda yo'q",
+    "add_to_cart": "Savatga qo'shish",
+    "added": "Savatga qo'shildi",
+    "factory": "Zavod",
+    "units": "dona"
+  },
+  "cart": {
+    "title": "Savat",
+    "empty": "Savat bo'sh",
+    "total": "Jami",
+    "checkout": "Buyurtma berish",
+    "split_notice": "Buyurtma {} ta zavodga bo'linadi",
+    "remove": "O'chirish",
+    "order_placed": "Buyurtma qabul qilindi"
+  },
+  "orders": {
+    "title": "Buyurtmalar",
+    "empty": "Buyurtmalar yo'q",
+    "order_no": "Buyurtma #{}",
+    "total": "Jami",
+    "commission": "Komissiya",
+    "items": "Mahsulotlar",
+    "cancel_order": "Buyurtmani bekor qilish",
+    "status": {
+      "new": "Yangi",
+      "confirmed": "Tasdiqlangan",
+      "shipped": "Jo'natilgan",
+      "delivered": "Yetkazilgan",
+      "cancelled": "Bekor qilingan"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "personal": "Shaxsiy ma'lumotlar",
+    "company": "Kompaniya",
+    "language": "Til",
+    "change_password": "Parolni o'zgartirish"
+  }
+}
