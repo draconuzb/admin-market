@@ -1,0 +1,10 @@
+[project]
+name = "admin-market-api"
+version = "0.1.0"
+description = "Admin Market B2B marketplace API"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

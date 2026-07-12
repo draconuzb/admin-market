@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.db
+*.sqlite3
+
+# Env / secrets
+.env
+*.pem
+
+# Media uploads
+apps/api/media/
+media/
+
+# Node / Flutter (later phases)
+node_modules/
+.dart_tool/
+build/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/

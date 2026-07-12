@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-adminmarket}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-in-prod}
+      POSTGRES_DB: ${POSTGRES_DB:-adminmarket}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adminmarket}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./apps/api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-adminmarket}:${POSTGRES_PASSWORD:-change-me-in-prod}@postgres:5432/${POSTGRES_DB:-adminmarket}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-change-me}
+      ENV: ${ENV:-development}
+      SMS_PROVIDER: ${SMS_PROVIDER:-console}
+    ports:
+      - "8000:8000"
+    volumes:
+      - media:/app/media
+
+volumes:
+  pgdata:
+  media:
