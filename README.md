@@ -3,7 +3,7 @@
 Zavodlar, distribyutorlar va do'konlarni bog'lovchi ulgurji B2B bozor (Oʻzbekiston bozori uchun).
 A B2B wholesale marketplace connecting factories, distributors and retail shops.
 
-> **Holat / Status:** Phase 1 + 2 + 3 tayyor. Phase 1: auth (mock SMS), catalog. Phase 2: savat, checkout (ko'p-zavodli bo'linish + snapshotlar), status o'tishlari, admin tasdiqlash. Phase 3: **Flutter buyer ilovasi** (splash, til tanlash, auth+OTP, home, katalog, mahsulot, savat, checkout, buyurtmalar, profil). Zavod paneli + admin web Phase 4 da.
+> **Holat / Status:** Phase 1–3 to'liq + Phase 4 backend tayyor. Phase 1: auth (mock SMS), catalog. Phase 2: savat, checkout (ko'p-zavodli bo'linish + snapshotlar), status o'tishlari, admin tasdiqlash. Phase 3: **Flutter buyer ilovasi**. Phase 4 (backend): zavod mahsulot CRUD + rasm yuklash + statistika, admin moderatsiya + hisobotlar. **Qolgan:** Phase 4 Flutter (zavod paneli + admin web UI), Phase 5 (real Eskiz SMS, deploy).
 
 ## Texnologiyalar / Stack
 
@@ -120,9 +120,16 @@ Barcha endpointlar `/api/v1` ostida. To'liq interaktiv hujjat: `/docs`.
 
 **Status o'tishlari (faqat oldinga):** `new → confirmed → shipped → delivered`. Bekor qilish: `new` dan (do'kon yoki zavod) yoki `confirmed` dan (faqat zavod). Zaxira (stock) zavod **tasdiqlaganda** kamayadi, bekor qilinganda qaytadi.
 
+**Zavod paneli (faqat zavod):**
+- `GET/POST /factory/products`, `PATCH/DELETE /factory/products/{id}`
+- `POST /factory/products/{id}/images` (multipart fayl → `StorageProvider`)
+- `GET /factory/stats` (jami/oylik buyurtmalar, oylik daromad+komissiya, kutilayotgan)
+
 **Admin:**
 - `GET /admin/registrations`, `PATCH /admin/registrations/{id}` (`approve`|`reject`)
 - `GET /admin/users`, `PATCH /admin/users/{id}` (`block`|`unblock`)
+- `GET /admin/products`, `PATCH /admin/products/{id}` (`hide`|`unhide`) — moderatsiya
+- `GET /admin/reports/summary?from=&to=` → `{orders_count, gmv, commission_total}`
 - `GET /admin/settings`, `PUT /admin/settings` (masalan `commission_percent`)
 
 ## Loyiha tuzilishi / Layout

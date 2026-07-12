@@ -4,22 +4,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current state
 
-This repository is **greenfield**: the only file is [optom-market-prompt_1.md](optom-market-prompt_1.md), a full development spec. **No code is scaffolded yet**, so there are no build/lint/test commands to run. That spec is the source of truth — read it before writing any code, and keep this file in sync as the project is built.
+Monorepo: `apps/api` (FastAPI backend) and `apps/mobile` (Flutter buyer app). The full spec is [optom-market-prompt_1.md](optom-market-prompt_1.md) — the source of truth for scope and rules; read it before adding features.
 
-`optom-market-prompt_1.md` is written mostly in Uzbek/Russian; the product ("Admin Market" / "Optom Market") targets Uzbekistan, so UI strings, seed data, and domain terms are Uzbek-first (uz → ru → en).
+**Built so far:** Phase 1 (auth + catalog), Phase 2 (cart + orders + admin approval), Phase 3 (Flutter buyer app). **Remaining:** Phase 4 (Flutter factory panel + admin web; backend still needs `factory/products` CRUD, `factory/stats`, `admin/products` moderation, `admin/reports/summary`), Phase 5 (real Eskiz SMS, image upload, deploy docs). Do one phase per request.
 
-## What is being built
+The product ("Admin Market") targets Uzbekistan: UI strings, seed data, and domain terms are Uzbek-first (uz → ru → en), and domain words appear in Uzbek (*zavod*=factory, *do'kon*=shop).
 
-A **B2B wholesale marketplace** connecting factories (*zavod*), distributors, and retail shops (*do'kon*). Shops order directly from factory catalogs at wholesale prices; the platform takes a commission per completed order. Build order is phased (Phase 1 backend core → 2 orders → 3 buyer app → 4 factory/admin → 5 polish/deploy) — do one phase per request, not all at once.
+## Commands
 
-## Fixed tech stack (do not substitute)
+Backend (`apps/api`, venv at `apps/api/.venv`):
+```bash
+apps/api/.venv/Scripts/python.exe -m pytest              # all tests (SQLite in-memory, no Postgres needed)
+apps/api/.venv/Scripts/python.exe -m pytest tests/test_checkout.py::test_checkout_empties_cart   # single test
+apps/api/.venv/Scripts/python.exe -m alembic upgrade head           # migrations (reads .env DATABASE_URL)
+DATABASE_URL="sqlite:///dev.db" ENV=development python -m app.seed   # seed demo data
+uvicorn app.main:app --reload                            # run API on :8000  (/docs for OpenAPI)
+```
+Generate a migration against a throwaway SQLite so Postgres need not be running:
+`alembic -x db_url=sqlite:///_m.db upgrade head && alembic -x db_url=sqlite:///_m.db revision --autogenerate -m "msg"` (then delete `_m.db`).
 
-- **Backend:** Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL 16, Pydantic v2, JWT (access + refresh)
-- **Frontend (one codebase, mobile + web):** Flutter (stable), Riverpod, go_router, dio, easy_localization
-- **Admin panel:** Flutter Web build of the same app, role-gated routes
-- **Deploy:** single VPS via Docker Compose (services: `api`, `postgres`, `nginx`); ship `docker-compose.yml` + `.env.example`
+Flutter (`apps/mobile`):
+```bash
+flutter analyze          # lint (info-level lints are expected; keep errors at 0)
+flutter test             # unit tests
+flutter run -d chrome --web-port 8080   # run against a backend on :8000 (CORS default allows :8080)
+flutter build web        # full compile check
+```
+Whole stack: `docker compose up --build` (then `docker compose exec api python -m app.seed`).
 
-When these commands become real, record them here (e.g. `uvicorn`/`pytest` for the API, `alembic upgrade head`, `flutter run`/`flutter test`, `docker compose up`).
+## Tech stack (fixed — do not substitute)
+
+- **Backend:** Python 3.12 (3.13 works locally), FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL 16, Pydantic v2, JWT. `bcrypt` is pinned to 4.0.1 (passlib 1.7.4 can't read newer versions).
+- **Frontend (one codebase, mobile + web):** Flutter, Riverpod, go_router, dio, easy_localization. Admin panel = Flutter Web build of the same app with role-gated routes.
+- **Deploy:** single VPS via Docker Compose (`api`, `postgres`, `nginx`).
+
+## Backend layout notes
+
+- Models store enums as strings (`native_enum=False`) and use generic types so the SQLite test suite and Postgres share one schema. `app/models/__init__.py` re-exports everything; importing it registers all tables.
+- Business logic lives in `app/services/` (`orders.py` = checkout + status transitions, `otp.py`, `sms.py`, `storage.py`), not in routers. Role guards are in `app/core/deps.py` (`require_roles(...)`, `get_active_user`).
+- Errors return `{"detail": {"code", "message"}}`; the Flutter `ApiException` parses that shape, so keep it.
+- The Flutter app restores its session via `GET /auth/me` (returns the current user at any status). Login only returns tokens.
 
 ## Architecture rules that are easy to get wrong
 
