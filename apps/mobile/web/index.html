@@ -51,6 +51,25 @@
       var el = document.getElementById('boot');
       if (el) { el.classList.add('hide'); setTimeout(function () { el.remove(); }, 400); }
     });
+
+    // Capture the PWA install prompt so Flutter can offer an "Install" button.
+    window._amInstall = { prompt: null, available: false };
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      window._amInstall.prompt = e;
+      window._amInstall.available = true;
+    });
+    window.addEventListener('appinstalled', function () {
+      window._amInstall.prompt = null;
+      window._amInstall.available = false;
+    });
+    window._amInstallTrigger = function () {
+      var p = window._amInstall.prompt;
+      if (!p) return;
+      p.prompt();
+      window._amInstall.prompt = null;
+      window._amInstall.available = false;
+    };
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>

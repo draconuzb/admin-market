@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/config.dart';
 import '../../../core/theme.dart';
 import '../../../shared/widgets/async_views.dart';
+import '../../../shared/widgets/install_banner.dart';
 import '../../../shared/widgets/product_card.dart';
 import '../catalog_providers.dart';
 
@@ -113,6 +114,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
             ),
+
+            // ── PWA install banner (web only, when available) ──
+            const SliverToBoxAdapter(child: InstallBanner()),
 
             // ── Categories ──
             SliverToBoxAdapter(child: _section('home.categories'.tr())),

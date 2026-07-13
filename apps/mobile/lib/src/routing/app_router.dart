@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -57,6 +58,10 @@ bool _allowed(String role, String loc) => switch (role) {
       _ => _buyerPrefixes.any((p) => loc == p || loc.startsWith('$p/') || loc.startsWith('$p?')),
     };
 
+/// iOS-style slide transition for pushed routes.
+CupertinoPage<void> _slide(GoRouterState state, Widget child) =>
+    CupertinoPage<void>(key: state.pageKey, child: child);
+
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _AuthListenable(ref);
 
@@ -93,37 +98,46 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/register', builder: (_, __) => const RegisterScreen()),
       GoRoute(path: '/pending', builder: (_, __) => const PendingScreen()),
 
-      // ---- Buyer pushed routes ----
+      // ---- Buyer pushed routes (iOS slide transitions) ----
       GoRoute(
         path: '/products',
-        builder: (_, s) => CatalogScreen(
-          initialCategoryId: int.tryParse(s.uri.queryParameters['category'] ?? ''),
-          initialFactoryId: int.tryParse(s.uri.queryParameters['factory'] ?? ''),
+        pageBuilder: (_, s) => _slide(
+          s,
+          CatalogScreen(
+            initialCategoryId: int.tryParse(s.uri.queryParameters['category'] ?? ''),
+            initialFactoryId: int.tryParse(s.uri.queryParameters['factory'] ?? ''),
+          ),
         ),
       ),
       GoRoute(
         path: '/product/:id',
-        builder: (_, s) => ProductDetailScreen(productId: int.parse(s.pathParameters['id']!)),
+        pageBuilder: (_, s) =>
+            _slide(s, ProductDetailScreen(productId: int.parse(s.pathParameters['id']!))),
       ),
-      GoRoute(path: '/checkout', builder: (_, __) => const CheckoutScreen()),
+      GoRoute(
+        path: '/checkout',
+        pageBuilder: (_, s) => _slide(s, const CheckoutScreen()),
+      ),
       GoRoute(
         path: '/order/:id',
-        builder: (_, s) => OrderDetailScreen(orderId: int.parse(s.pathParameters['id']!)),
+        pageBuilder: (_, s) =>
+            _slide(s, OrderDetailScreen(orderId: int.parse(s.pathParameters['id']!))),
       ),
 
       // ---- Factory pushed routes ----
       GoRoute(
         path: '/factory/order/:id',
-        builder: (_, s) =>
-            FactoryOrderDetailScreen(orderId: int.parse(s.pathParameters['id']!)),
+        pageBuilder: (_, s) =>
+            _slide(s, FactoryOrderDetailScreen(orderId: int.parse(s.pathParameters['id']!))),
       ),
       GoRoute(
         path: '/factory/product/new',
-        builder: (_, __) => const ProductFormScreen(),
+        pageBuilder: (_, s) => _slide(s, const ProductFormScreen()),
       ),
       GoRoute(
         path: '/factory/product/:id/edit',
-        builder: (_, s) => ProductFormScreen(productId: int.parse(s.pathParameters['id']!)),
+        pageBuilder: (_, s) =>
+            _slide(s, ProductFormScreen(productId: int.parse(s.pathParameters['id']!))),
       ),
 
       // ---- Buyer shell ----
