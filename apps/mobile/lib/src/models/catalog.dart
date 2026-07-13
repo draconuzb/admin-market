@@ -50,6 +50,7 @@ class Product {
     required this.minOrderQty,
     required this.stockQty,
     required this.isFeatured,
+    this.isActive = true,
     this.descriptionUz,
     this.descriptionRu,
     this.descriptionEn,
@@ -67,6 +68,7 @@ class Product {
   final int minOrderQty;
   final int stockQty;
   final bool isFeatured;
+  final bool isActive;
   final String? descriptionUz;
   final String? descriptionRu;
   final String? descriptionEn;
@@ -98,6 +100,7 @@ class Product {
         minOrderQty: j['min_order_qty'] as int,
         stockQty: j['stock_qty'] as int,
         isFeatured: j['is_featured'] as bool? ?? false,
+        isActive: j['is_active'] as bool? ?? true,
         descriptionUz: j['description_uz'] as String?,
         descriptionRu: j['description_ru'] as String?,
         descriptionEn: j['description_en'] as String?,

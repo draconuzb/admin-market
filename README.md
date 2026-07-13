@@ -3,7 +3,7 @@
 Zavodlar, distribyutorlar va do'konlarni bog'lovchi ulgurji B2B bozor (Oʻzbekiston bozori uchun).
 A B2B wholesale marketplace connecting factories, distributors and retail shops.
 
-> **Holat / Status:** Phase 1–3 to'liq + Phase 4 backend tayyor. Phase 1: auth (mock SMS), catalog. Phase 2: savat, checkout (ko'p-zavodli bo'linish + snapshotlar), status o'tishlari, admin tasdiqlash. Phase 3: **Flutter buyer ilovasi**. Phase 4 (backend): zavod mahsulot CRUD + rasm yuklash + statistika, admin moderatsiya + hisobotlar. **Qolgan:** Phase 4 Flutter (zavod paneli + admin web UI), Phase 5 (real Eskiz SMS, deploy).
+> **Holat / Status:** Phase 1–4 tayyor. Phase 1: auth (mock SMS), catalog. Phase 2: savat, checkout (ko'p-zavodli bo'linish + snapshotlar), status o'tishlari, admin tasdiqlash. Phase 3: **Flutter buyer ilovasi**. Phase 4: **zavod paneli** (buyurtmalar + status boshqaruvi, mahsulot CRUD, statistika) va **admin web** (registratsiyalar, userlar, mahsulot moderatsiyasi, sozlamalar, hisobotlar) — bitta Flutter koddan, login'dan keyin rolga qarab shell. **Qolgan:** Phase 5 (real Eskiz SMS, rasm yuklash oqimi, deploy). 
 
 ## Texnologiyalar / Stack
 
@@ -58,7 +58,10 @@ flutter run -d chrome --web-port 8080
 flutter run -d chrome --web-port 8080 --dart-define=API_BASE_URL=http://localhost:8000
 ```
 
-Test akkaunt bilan kirish: `+998905555555` / `shop123` (seed'dan, tasdiqlangan do'kon).
+Rolga qarab login'dan keyin turli panelga tushadi (seed akkauntlari):
+- **Do'kon** `+998905555555` / `shop123` → buyer ilovasi (Home/Katalog/Savat/Buyurtmalar/Profil)
+- **Zavod** `+998901111111` / `factory123` → zavod paneli (Buyurtmalar/Mahsulotlar/Statistika/Profil)
+- **Admin** `+998900000000` / `admin123` → admin web (side nav: Ro'yxatlar/Userlar/Mahsulotlar/Sozlamalar/Hisobotlar)
 
 ```bash
 flutter analyze          # statik tahlil
