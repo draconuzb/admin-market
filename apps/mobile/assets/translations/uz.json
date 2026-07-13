@@ -57,7 +57,8 @@
     "categories": "Kategoriyalar",
     "featured": "Tavsiya etilgan",
     "factories": "Zavodlar",
-    "see_all": "Barchasi"
+    "see_all": "Barchasi",
+    "subtitle": "Ulgurji bozor — zavod narxida xarid qiling{}"
   },
   "catalog": {
     "title": "Katalog",
@@ -77,7 +78,8 @@
     "add_to_cart": "Savatga qo'shish",
     "added": "Savatga qo'shildi",
     "factory": "Zavod",
-    "units": "dona"
+    "units": "dona",
+    "description": "Tavsif"
   },
   "cart": {
     "title": "Savat",

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_exception.dart';
 import '../../../core/format.dart';
+import '../../../core/theme.dart';
 import '../../../providers.dart';
 import '../../../shared/widgets/async_views.dart';
 import '../../../shared/widgets/status_badge.dart';
@@ -29,6 +30,7 @@ class OrderDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(orderDetailProvider(orderId));
     return Scaffold(
+      backgroundColor: AppTheme.bg,
       appBar: AppBar(title: Text('orders.order_no'.tr(args: ['$orderId']))),
       body: async.when(
         loading: () => const LoadingView(),
@@ -37,44 +39,124 @@ class OrderDetailScreen extends ConsumerWidget {
           onRetry: () => ref.invalidate(orderDetailProvider(orderId)),
         ),
         data: (o) => ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('orders.items'.tr(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                OrderStatusBadge(status: o.status),
-              ],
-            ),
-            const SizedBox(height: 8),
-            for (final item in o.items)
-              Card(
-                child: ListTile(
-                  title: Text(item.productName),
-                  subtitle: Text('${item.quantity} × ${formatPrice(item.unitPrice)}'),
-                  trailing: Text(formatPrice(item.subtotal),
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
-                ),
+            // Status
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppTheme.cardShadow,
               ),
-            const SizedBox(height: 12),
-            _row('orders.total'.tr(), formatPrice(o.totalAmount), bold: true),
-            _row('orders.commission'.tr(),
-                '${formatPrice(o.commissionAmount)} (${o.commissionPercent}%)'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Status',
+                      style: TextStyle(fontSize: 15, color: AppTheme.textSecondary)),
+                  OrderStatusBadge(status: o.status),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Items
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppTheme.cardShadow,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+                    child: Text('orders.items'.tr(),
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600)),
+                  ),
+                  for (int i = 0; i < o.items.length; i++) ...[
+                    if (i > 0)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Divider(height: 0.5, thickness: 0.5),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(o.items[i].productName,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w500, fontSize: 15)),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${o.items[i].quantity} × ${formatPrice(o.items[i].unitPrice)}',
+                                  style: const TextStyle(
+                                      fontSize: 13, color: AppTheme.textSecondary),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(formatPrice(o.items[i].subtotal),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Summary
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: AppTheme.cardShadow,
+              ),
+              child: Column(
+                children: [
+                  _row('orders.total'.tr(), formatPrice(o.totalAmount), bold: true),
+                  const Divider(height: 16),
+                  _row('orders.commission'.tr(),
+                      '${formatPrice(o.commissionAmount)} (${o.commissionPercent}%)'),
+                ],
+              ),
+            ),
+
             if (o.comment != null && o.comment!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(o.comment!, style: TextStyle(color: Colors.grey.shade700)),
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: AppTheme.cardShadow,
+                ),
+                child: Text(o.comment!,
+                    style: const TextStyle(
+                        color: AppTheme.textSecondary, fontSize: 14)),
+              ),
             ],
+
             if (o.canBuyerCancel) ...[
               const SizedBox(height: 24),
-              OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                  minimumSize: const Size.fromHeight(48),
+              FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppTheme.danger,
                 ),
                 onPressed: () => _cancel(context, ref),
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close, size: 20),
                 label: Text('orders.cancel_order'.tr()),
               ),
             ],
@@ -85,14 +167,16 @@ class OrderDetailScreen extends ConsumerWidget {
   }
 
   Widget _row(String label, String value, {bool bold = false}) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 2),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: const TextStyle(fontSize: 15)),
+            Text(label,
+                style: const TextStyle(
+                    fontSize: 15, color: AppTheme.textSecondary)),
             Text(value,
                 style: TextStyle(
-                    fontSize: bold ? 17 : 15,
+                    fontSize: bold ? 18 : 15,
                     fontWeight: bold ? FontWeight.w800 : FontWeight.w500)),
           ],
         ),

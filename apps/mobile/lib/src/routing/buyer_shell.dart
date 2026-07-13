@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/cart/cart_controller.dart';
 
-/// Bottom-nav shell for buyers: Home | Catalog | Cart | Orders | Profile.
+/// iOS-style tab bar shell for buyers.
 class BuyerShell extends ConsumerWidget {
   const BuyerShell({super.key, required this.shell});
   final StatefulNavigationShell shell;
@@ -15,24 +15,49 @@ class BuyerShell extends ConsumerWidget {
     final cartCount = ref.watch(cartCountProvider);
     return Scaffold(
       body: shell,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: shell.currentIndex,
-        onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
-        destinations: [
-          NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: 'nav.home'.tr()),
-          NavigationDestination(icon: const Icon(Icons.grid_view_outlined), selectedIcon: const Icon(Icons.grid_view), label: 'nav.catalog'.tr()),
-          NavigationDestination(
-            icon: Badge(
-              isLabelVisible: cartCount > 0,
-              label: Text('$cartCount'),
-              child: const Icon(Icons.shopping_cart_outlined),
-            ),
-            selectedIcon: const Icon(Icons.shopping_cart),
-            label: 'nav.cart'.tr(),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade200, width: 0.5),
           ),
-          NavigationDestination(icon: const Icon(Icons.receipt_long_outlined), selectedIcon: const Icon(Icons.receipt_long), label: 'nav.orders'.tr()),
-          NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: 'nav.profile'.tr()),
-        ],
+        ),
+        child: NavigationBar(
+          selectedIndex: shell.currentIndex,
+          onDestinationSelected: (i) =>
+              shell.goBranch(i, initialLocation: i == shell.currentIndex),
+          destinations: [
+            NavigationDestination(
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home_rounded),
+                label: 'nav.home'.tr()),
+            NavigationDestination(
+                icon: const Icon(Icons.grid_view_outlined),
+                selectedIcon: const Icon(Icons.grid_view_rounded),
+                label: 'nav.catalog'.tr()),
+            NavigationDestination(
+              icon: Badge(
+                isLabelVisible: cartCount > 0,
+                label: Text('$cartCount'),
+                child: const Icon(Icons.shopping_bag_outlined),
+              ),
+              selectedIcon: Badge(
+                isLabelVisible: cartCount > 0,
+                label: Text('$cartCount'),
+                child: const Icon(Icons.shopping_bag_rounded),
+              ),
+              label: 'nav.cart'.tr(),
+            ),
+            NavigationDestination(
+                icon: const Icon(Icons.receipt_long_outlined),
+                selectedIcon: const Icon(Icons.receipt_long_rounded),
+                label: 'nav.orders'.tr()),
+            NavigationDestination(
+                icon: const Icon(Icons.person_outlined),
+                selectedIcon: const Icon(Icons.person_rounded),
+                label: 'nav.profile'.tr()),
+          ],
+        ),
       ),
     );
   }

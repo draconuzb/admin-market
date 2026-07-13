@@ -57,10 +57,12 @@ CATEGORIES = [
     {"name_uz": "Maishiy texnika", "name_ru": "Бытовая техника", "name_en": "Appliances"},
 ]
 
-# Real product photos by keyword (LoremFlickr, no API key). `lock` keeps each
-# product's image stable across re-seeds.
+# Branded placeholder images via placehold.co with product keyword text.
 def _img(keyword: str, lock: int) -> str:
-    return f"https://loremflickr.com/600/450/{keyword}?lock={lock}"
+    """Generate a branded placeholder image via placehold.co."""
+    # Use brand blue background with white text showing the product keyword
+    text = keyword.replace(' ', '+')
+    return f"https://placehold.co/600x450/1E4FD8/ffffff?text={text}&font=roboto"
 
 
 # (name_uz, name_ru, name_en, category_index, factory_index, price, min_qty, stock, featured, image_keyword)

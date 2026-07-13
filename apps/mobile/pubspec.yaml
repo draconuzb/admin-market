@@ -19,6 +19,8 @@ dependencies:
   easy_localization: ^3.0.7
   shared_preferences: ^2.3.3
   intl: ^0.20.2
+  google_fonts: ^6.2.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

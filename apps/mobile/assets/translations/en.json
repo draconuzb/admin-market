@@ -57,7 +57,8 @@
     "categories": "Categories",
     "featured": "Featured",
     "factories": "Factories",
-    "see_all": "See all"
+    "see_all": "See all",
+    "subtitle": "Wholesale marketplace — buy at factory prices{}"
   },
   "catalog": {
     "title": "Catalog",
@@ -77,7 +78,8 @@
     "add_to_cart": "Add to cart",
     "added": "Added to cart",
     "factory": "Factory",
-    "units": "pcs"
+    "units": "pcs",
+    "description": "Description"
   },
   "cart": {
     "title": "Cart",

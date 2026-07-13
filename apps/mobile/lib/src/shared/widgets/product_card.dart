@@ -1,45 +1,94 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/config.dart';
 import '../../core/format.dart';
+import '../../core/theme.dart';
 import '../../models/catalog.dart';
 
-/// Network image with a soft skeleton while loading and a graceful fallback.
+/// iOS-style network image with shimmer loading and elegant placeholder.
 class ProductImageBox extends StatelessWidget {
-  const ProductImageBox({super.key, required this.imageUrl, this.size});
+  const ProductImageBox({
+    super.key,
+    required this.imageUrl,
+    this.size,
+    this.borderRadius,
+    this.productName,
+  });
   final String? imageUrl;
   final double? size;
+  final BorderRadius? borderRadius;
+  final String? productName;
 
   @override
   Widget build(BuildContext context) {
-    final placeholder = Container(
-      color: Colors.grey.shade100,
-      alignment: Alignment.center,
-      child: Icon(Icons.inventory_2_outlined, color: Colors.grey.shade400, size: 32),
-    );
+    final br = borderRadius ?? BorderRadius.zero;
+    final placeholder = _IOSPlaceholder(productName: productName, borderRadius: br);
     if (imageUrl == null || imageUrl!.isEmpty) return placeholder;
-    return Image.network(
-      AppConfig.mediaUrl(imageUrl!),
-      fit: BoxFit.cover,
-      width: size,
-      height: size,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return Container(
-          color: Colors.grey.shade100,
-          alignment: Alignment.center,
-          child: const SizedBox(
-            width: 22, height: 22,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        );
-      },
-      errorBuilder: (_, __, ___) => placeholder,
+    return ClipRRect(
+      borderRadius: br,
+      child: Image.network(
+        AppConfig.mediaUrl(imageUrl!),
+        fit: BoxFit.cover,
+        width: size,
+        height: size,
+        loadingBuilder: (context, child, progress) {
+          if (progress == null) return child;
+          return Shimmer.fromColors(
+            baseColor: const Color(0xFFE5E5EA),
+            highlightColor: const Color(0xFFF2F2F7),
+            child: Container(color: const Color(0xFFE5E5EA), width: size, height: size),
+          );
+        },
+        errorBuilder: (_, __, ___) => placeholder,
+      ),
     );
   }
 }
 
+class _IOSPlaceholder extends StatelessWidget {
+  const _IOSPlaceholder({this.productName, required this.borderRadius});
+  final String? productName;
+  final BorderRadius borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        color: const Color(0xFFF2F2F7),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.photo_outlined, color: AppTheme.textTertiary, size: 32),
+            if (productName != null && productName!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  productName!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.textTertiary,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// iOS-style product card with subtle shadow and clean typography.
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.product, required this.onTap});
   final Product product;
@@ -48,46 +97,47 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lang = context.locale.languageCode;
-    final primary = Theme.of(context).colorScheme.primary;
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      elevation: 0,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: AppTheme.cardShadow,
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            Expanded(
+              flex: 3,
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  AspectRatio(
-                    aspectRatio: 1.3,
-                    child: ProductImageBox(
-                      imageUrl: product.images.isNotEmpty ? product.images.first : null,
-                    ),
+                  ProductImageBox(
+                    imageUrl: product.images.isNotEmpty ? product.images.first : null,
+                    productName: product.name(lang),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                   ),
                   if (product.isFeatured)
                     Positioned(
                       top: 8, left: 8,
-                      child: _tag(Icons.star_rounded, 'home.featured'.tr(),
-                          const Color(0xFFEA8600)),
+                      child: _pill('home.featured'.tr(), AppTheme.warning, Icons.star_rounded),
                     ),
                   if (!product.inStock)
                     Positioned(
                       top: 8, right: 8,
-                      child: _tag(Icons.block, 'product.out_of_stock'.tr(), Colors.red),
+                      child: _pill('product.out_of_stock'.tr(), AppTheme.danger, Icons.close),
                     ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(10),
+            ),
+            // Info
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -96,34 +146,35 @@ class ProductCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontWeight: FontWeight.w600, height: 1.2, fontSize: 14),
+                        fontWeight: FontWeight.w600, fontSize: 14, height: 1.2,
+                      ),
                     ),
-                    const SizedBox(height: 6),
-                    Text(formatPrice(product.price),
-                        style: TextStyle(color: primary, fontWeight: FontWeight.w800, fontSize: 15)),
-                    const SizedBox(height: 3),
-                    Row(
-                      children: [
-                        Icon(Icons.shopping_bag_outlined, size: 12, color: Colors.grey.shade500),
-                        const SizedBox(width: 3),
-                        Text(
-                          '${'product.min_order'.tr()}: ${product.minOrderQty}',
-                          style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
-                        ),
-                      ],
+                    const Spacer(),
+                    Text(
+                      formatPrice(product.price),
+                      style: const TextStyle(
+                        color: AppTheme.accent,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${'product.min_order'.tr()}: ${product.minOrderQty}',
+                      style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _tag(IconData icon, String text, Color color) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+  Widget _pill(String text, Color color, IconData icon) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(20),
@@ -131,10 +182,11 @@ class ProductCard extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 12, color: Colors.white),
+            Icon(icon, size: 11, color: Colors.white),
             const SizedBox(width: 3),
             Text(text,
-                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)),
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 10, fontWeight: FontWeight.w600)),
           ],
         ),
       );
