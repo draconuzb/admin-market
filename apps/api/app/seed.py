@@ -57,11 +57,29 @@ CATEGORIES = [
     {"name_uz": "Maishiy texnika", "name_ru": "Бытовая техника", "name_en": "Appliances"},
 ]
 
-# Branded placeholder images via placehold.co with product keyword text.
+# Curated real product photos (Unsplash CDN). Each keyword maps to a hand-picked,
+# relevant, high-quality photo; a branded placeholder is used as a fallback.
+_UNSPLASH = {
+    "sugar": "photo-1581600140682-d4e68c8cde32",
+    "flour": "photo-1610725664285-7c57e6eeac3f",
+    "rice": "photo-1586201375761-83865001e31c",
+    "oil": "photo-1474979266404-7eaacbcd87c5",
+    "salt": "photo-1518110925495-5fe2fda0442c",
+    "water": "photo-1561041695-d2fadf9f318c",
+    "juice": "photo-1621506289937-a8e4df240d0b",
+    "tea": "photo-1594631252845-29fc4cc8cde9",
+    "refrigerator": "photo-1721613877687-c9099b698faa",
+    "laundry": "photo-1626806819282-2c1dc01a5e0c",
+    "washing": "photo-1626806819282-2c1dc01a5e0c",
+}
+
+
 def _img(keyword: str, lock: int) -> str:
-    """Generate a branded placeholder image via placehold.co."""
-    # Use brand blue background with white text showing the product keyword
-    text = keyword.replace(' ', '+')
+    """Return a curated real product photo URL for the given keyword."""
+    photo = _UNSPLASH.get(keyword)
+    if photo:
+        return f"https://images.unsplash.com/{photo}?w=600&h=450&fit=crop&q=80"
+    text = keyword.replace(" ", "+")
     return f"https://placehold.co/600x450/1E4FD8/ffffff?text={text}&font=roboto"
 
 
