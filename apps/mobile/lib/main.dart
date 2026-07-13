@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'src/core/responsive.dart';
 import 'src/core/theme.dart';
 import 'src/providers.dart';
 import 'src/routing/app_router.dart';
@@ -37,6 +38,7 @@ class AdminMarketApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: router,
+      builder: (context, child) => MobileFrame(child: child ?? const SizedBox()),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
