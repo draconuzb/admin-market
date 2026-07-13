@@ -111,6 +111,10 @@
     "personal": "Личные данные",
     "company": "Компания",
     "language": "Язык",
+    "appearance": "Оформление",
+    "theme_system": "Как в системе",
+    "theme_light": "Светлая",
+    "theme_dark": "Тёмная",
     "change_password": "Сменить пароль"
   },
   "factory": {

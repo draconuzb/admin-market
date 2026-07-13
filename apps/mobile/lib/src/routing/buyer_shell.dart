@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/theme.dart';
 import '../features/cart/cart_controller.dart';
 
 /// iOS-style tab bar shell for buyers.
@@ -17,9 +18,9 @@ class BuyerShell extends ConsumerWidget {
       body: shell,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.surface,
           border: Border(
-            top: BorderSide(color: Colors.grey.shade200, width: 0.5),
+            top: BorderSide(color: AppTheme.separator, width: 0.5),
           ),
         ),
         child: NavigationBar(

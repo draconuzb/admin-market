@@ -64,7 +64,7 @@ class _CartBody extends ConsumerWidget {
                 margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.surface,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: AppTheme.cardShadow,
                 ),
@@ -75,7 +75,7 @@ class _CartBody extends ConsumerWidget {
                     Container(
                       width: 52, height: 52,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF2F2F7),
+                        color: AppTheme.fill,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.photo_outlined,
@@ -132,9 +132,9 @@ class _CartBody extends ConsumerWidget {
           padding: EdgeInsets.fromLTRB(20, 14, 20,
               MediaQuery.of(context).padding.bottom + 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             border: Border(
-                top: BorderSide(color: Colors.grey.shade200, width: 0.5)),
+                top: BorderSide(color: AppTheme.separator, width: 0.5)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

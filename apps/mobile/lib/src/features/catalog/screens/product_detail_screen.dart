@@ -20,8 +20,8 @@ class ProductDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(productDetailProvider(productId));
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white),
+      backgroundColor: AppTheme.surface,
+      appBar: AppBar(backgroundColor: AppTheme.surface),
       body: async.when(
         loading: () => const LoadingView(),
         error: (e, _) => ErrorView(
@@ -82,7 +82,7 @@ class _DetailState extends ConsumerState<_Detail> {
               // ── Image carousel ──
               Container(
                 height: 320,
-                color: const Color(0xFFF2F2F7),
+                color: AppTheme.fill,
                 child: multiImage
                     ? Stack(
                         children: [
@@ -163,7 +163,7 @@ class _DetailState extends ConsumerState<_Detail> {
                       Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF2F2F7),
+                          color: AppTheme.fill,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Row(
@@ -223,8 +223,8 @@ class _DetailState extends ConsumerState<_Detail> {
           padding: EdgeInsets.fromLTRB(20, 12, 20,
               MediaQuery.of(context).padding.bottom + 12),
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(top: BorderSide(color: Colors.grey.shade200, width: 0.5)),
+            color: AppTheme.surface,
+            border: Border(top: BorderSide(color: AppTheme.separator, width: 0.5)),
           ),
           child: Row(
             children: [
@@ -262,7 +262,7 @@ class _DetailState extends ConsumerState<_Detail> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F2F7),
+        color: AppTheme.fill,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

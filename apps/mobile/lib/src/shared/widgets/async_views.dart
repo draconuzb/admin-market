@@ -25,7 +25,7 @@ class EmptyView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFFF2F2F7),
+              color: AppTheme.surface,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 40, color: AppTheme.textTertiary),
@@ -88,8 +88,8 @@ class ListSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: const Color(0xFFE5E5EA),
-      highlightColor: const Color(0xFFF2F2F7),
+      baseColor: AppTheme.isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA),
+      highlightColor: AppTheme.isDark ? const Color(0xFF3A3A3C) : const Color(0xFFF2F2F7),
       child: ListView.separated(
         padding: const EdgeInsets.all(20),
         itemCount: count,
@@ -97,7 +97,7 @@ class ListSkeleton extends StatelessWidget {
         itemBuilder: (_, __) => Container(
           height: 72,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             borderRadius: BorderRadius.circular(16),
           ),
         ),
@@ -114,8 +114,8 @@ class GridSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: const Color(0xFFE5E5EA),
-      highlightColor: const Color(0xFFF2F2F7),
+      baseColor: AppTheme.isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA),
+      highlightColor: AppTheme.isDark ? const Color(0xFF3A3A3C) : const Color(0xFFF2F2F7),
       child: GridView.count(
         crossAxisCount: 2,
         childAspectRatio: 0.65,
@@ -126,7 +126,7 @@ class GridSkeleton extends StatelessWidget {
           count,
           (_) => Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppTheme.surface,
               borderRadius: BorderRadius.circular(20),
             ),
           ),

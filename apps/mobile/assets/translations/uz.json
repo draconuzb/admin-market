@@ -111,6 +111,10 @@
     "personal": "Shaxsiy ma'lumotlar",
     "company": "Kompaniya",
     "language": "Til",
+    "appearance": "Ko'rinish",
+    "theme_system": "Tizim bo'yicha",
+    "theme_light": "Yorug'",
+    "theme_dark": "Qorong'i",
     "change_password": "Parolni o'zgartirish"
   },
   "factory": {

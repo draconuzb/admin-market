@@ -68,7 +68,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                     child: Container(
                       height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5E5EA).withValues(alpha: 0.5),
+                        color: AppTheme.fill.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(
@@ -96,7 +96,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                     child: Container(
                       width: 40, height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5E5EA).withValues(alpha: 0.5),
+                        color: AppTheme.fill.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.tune_rounded,
@@ -172,7 +172,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
           decoration: BoxDecoration(
-            color: selected ? AppTheme.accent : Colors.white,
+            color: selected ? AppTheme.accent : AppTheme.surface,
             borderRadius: BorderRadius.circular(20),
             boxShadow: selected ? [] : AppTheme.cardShadow,
           ),
@@ -192,7 +192,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   void _showSortSheet(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.surface,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => SafeArea(
@@ -203,7 +203,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
               width: 36, height: 4,
               margin: const EdgeInsets.only(top: 10, bottom: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFE5E5EA),
+                color: AppTheme.separator,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

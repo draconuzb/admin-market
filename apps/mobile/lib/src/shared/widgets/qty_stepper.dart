@@ -24,7 +24,7 @@ class QtyStepper extends StatelessWidget {
     return Container(
       height: 36,
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F2F7),
+        color: AppTheme.fill,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

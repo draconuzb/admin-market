@@ -55,9 +55,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(20, top + 20, 20, 36),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
+              decoration: BoxDecoration(
+                color: AppTheme.surface,
+                borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(32)),
               ),
               child: Column(
@@ -69,7 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF2F2F7),
+                          color: AppTheme.fill,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(Icons.language,
@@ -105,7 +105,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     // Phone
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppTheme.surface,
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: AppTheme.cardShadow,
                       ),
@@ -116,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           labelText: 'auth.phone'.tr(),
                           hintText: 'auth.phone_hint'.tr(),
                           prefixIcon: const Icon(Icons.phone_outlined, size: 20),
-                          fillColor: Colors.white,
+                          fillColor: AppTheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: BorderSide.none,
@@ -132,7 +132,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     // Password
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppTheme.surface,
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: AppTheme.cardShadow,
                       ),
@@ -150,7 +150,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             onPressed: () =>
                                 setState(() => _obscure = !_obscure),
                           ),
-                          fillColor: Colors.white,
+                          fillColor: AppTheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: BorderSide.none,

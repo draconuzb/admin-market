@@ -45,7 +45,7 @@ class OrderDetailScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: AppTheme.cardShadow,
               ),
@@ -63,7 +63,7 @@ class OrderDetailScreen extends ConsumerWidget {
             // Items
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: AppTheme.cardShadow,
               ),
@@ -119,7 +119,7 @@ class OrderDetailScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: AppTheme.cardShadow,
               ),

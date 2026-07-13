@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme.dart';
+import '../../../core/theme_controller.dart';
 import '../../../providers.dart';
 import '../../auth/auth_controller.dart';
 
@@ -27,9 +28,9 @@ class ProfileScreen extends ConsumerWidget {
           Container(
             width: double.infinity,
             padding: EdgeInsets.fromLTRB(20, top + 20, 20, 24),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
+            decoration: BoxDecoration(
+              color: AppTheme.surface,
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
             ),
             child: Column(
               children: [
@@ -87,6 +88,11 @@ class ProfileScreen extends ConsumerWidget {
 
           const SizedBox(height: 24),
 
+          // ── Appearance (theme) section ──
+          _AppearanceSection(),
+
+          const SizedBox(height: 24),
+
           // ── Logout ──
           IosGroupedSection(
             children: [
@@ -103,6 +109,34 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 40),
         ],
       ),
+    );
+  }
+}
+
+class _AppearanceSection extends ConsumerWidget {
+  static const _options = [
+    (ThemeMode.system, 'profile.theme_system', Icons.brightness_auto_rounded),
+    (ThemeMode.light, 'profile.theme_light', Icons.light_mode_rounded),
+    (ThemeMode.dark, 'profile.theme_dark', Icons.dark_mode_rounded),
+  ];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(themeModeProvider);
+    return IosGroupedSection(
+      header: 'profile.appearance'.tr(),
+      children: [
+        for (final (m, label, icon) in _options)
+          ListTile(
+            dense: true,
+            leading: Icon(icon, size: 22, color: AppTheme.accent),
+            title: Text(label.tr(), style: const TextStyle(fontSize: 16)),
+            trailing: mode == m
+                ? const Icon(Icons.check, color: AppTheme.accent, size: 20)
+                : null,
+            onTap: () => ref.read(themeModeProvider.notifier).set(m),
+          ),
+      ],
     );
   }
 }

@@ -36,9 +36,9 @@ class ProductImageBox extends StatelessWidget {
         loadingBuilder: (context, child, progress) {
           if (progress == null) return child;
           return Shimmer.fromColors(
-            baseColor: const Color(0xFFE5E5EA),
-            highlightColor: const Color(0xFFF2F2F7),
-            child: Container(color: const Color(0xFFE5E5EA), width: size, height: size),
+            baseColor: AppTheme.isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA),
+            highlightColor: AppTheme.isDark ? const Color(0xFF3A3A3C) : const Color(0xFFF2F2F7),
+            child: Container(color: AppTheme.fill, width: size, height: size),
           );
         },
         errorBuilder: (_, __, ___) => placeholder,
@@ -57,7 +57,7 @@ class _IOSPlaceholder extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        color: const Color(0xFFF2F2F7),
+        color: AppTheme.fill,
       ),
       child: Center(
         child: Column(
@@ -101,7 +101,7 @@ class ProductCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.surface,
           borderRadius: BorderRadius.circular(20),
           boxShadow: AppTheme.cardShadow,
         ),

@@ -90,7 +90,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   // Items
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.surface,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: AppTheme.cardShadow,
                     ),
@@ -138,7 +138,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   // Comment
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.surface,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: AppTheme.cardShadow,
                     ),
@@ -147,7 +147,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       maxLines: 3,
                       decoration: InputDecoration(
                         hintText: 'orders.title'.tr(),
-                        fillColor: Colors.white,
+                        fillColor: AppTheme.surface,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
@@ -164,9 +164,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               padding: EdgeInsets.fromLTRB(20, 14, 20,
                   MediaQuery.of(context).padding.bottom + 14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.surface,
                 border: Border(
-                    top: BorderSide(color: Colors.grey.shade200, width: 0.5)),
+                    top: BorderSide(color: AppTheme.separator, width: 0.5)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
