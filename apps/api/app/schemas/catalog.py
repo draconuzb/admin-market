@@ -42,6 +42,7 @@ class ProductOut(BaseModel):
     min_order_qty: int
     stock_qty: int
     is_featured: bool
+    images: list[ProductImageOut] = []
 
     model_config = {"from_attributes": True}
 
@@ -50,7 +51,6 @@ class ProductDetailOut(ProductOut):
     description_uz: str | None
     description_ru: str | None
     description_en: str | None
-    images: list[ProductImageOut]
     factory: FactoryBrief
 
 

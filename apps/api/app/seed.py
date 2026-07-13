@@ -57,18 +57,24 @@ CATEGORIES = [
     {"name_uz": "Maishiy texnika", "name_ru": "Бытовая техника", "name_en": "Appliances"},
 ]
 
-# (name_uz, name_ru, name_en, category_index, factory_index, price, min_qty, stock, featured)
+# Real product photos by keyword (LoremFlickr, no API key). `lock` keeps each
+# product's image stable across re-seeds.
+def _img(keyword: str, lock: int) -> str:
+    return f"https://loremflickr.com/600/450/{keyword}?lock={lock}"
+
+
+# (name_uz, name_ru, name_en, category_index, factory_index, price, min_qty, stock, featured, image_keyword)
 PRODUCTS = [
-    ("Shakar 50kg", "Сахар 50кг", "Sugar 50kg", 0, 0, "480000", 10, 500, True),
-    ("Un 25kg", "Мука 25кг", "Flour 25kg", 0, 0, "180000", 20, 800, False),
-    ("Guruch 25kg", "Рис 25кг", "Rice 25kg", 0, 0, "420000", 10, 300, True),
-    ("Yog' 5L", "Масло 5Л", "Oil 5L", 0, 1, "95000", 12, 600, False),
-    ("Tuz 1kg", "Соль 1кг", "Salt 1kg", 0, 1, "4500", 50, 2000, False),
-    ("Gazli suv 1.5L", "Газ. вода 1.5Л", "Sparkling water 1.5L", 1, 0, "6500", 24, 1500, True),
-    ("Sharbat 1L", "Сок 1Л", "Juice 1L", 1, 0, "12000", 12, 900, False),
-    ("Choy 250g", "Чай 250г", "Tea 250g", 1, 1, "18000", 20, 700, False),
-    ("Muzlatgich 250L", "Холодильник 250Л", "Fridge 250L", 2, 1, "4200000", 1, 40, True),
-    ("Kir yuvish mashinasi", "Стиральная машина", "Washing machine", 2, 1, "3800000", 1, 25, False),
+    ("Shakar 50kg", "Сахар 50кг", "Sugar 50kg", 0, 0, "480000", 10, 500, True, "sugar"),
+    ("Un 25kg", "Мука 25кг", "Flour 25kg", 0, 0, "180000", 20, 800, False, "flour"),
+    ("Guruch 25kg", "Рис 25кг", "Rice 25kg", 0, 0, "420000", 10, 300, True, "rice"),
+    ("Yog' 5L", "Масло 5Л", "Oil 5L", 0, 1, "95000", 12, 600, False, "oil"),
+    ("Tuz 1kg", "Соль 1кг", "Salt 1kg", 0, 1, "4500", 50, 2000, False, "salt"),
+    ("Gazli suv 1.5L", "Газ. вода 1.5Л", "Sparkling water 1.5L", 1, 0, "6500", 24, 1500, True, "water"),
+    ("Sharbat 1L", "Сок 1Л", "Juice 1L", 1, 0, "12000", 12, 900, False, "juice"),
+    ("Choy 250g", "Чай 250г", "Tea 250g", 1, 1, "18000", 20, 700, False, "tea"),
+    ("Muzlatgich 250L", "Холодильник 250Л", "Fridge 250L", 2, 1, "4200000", 1, 40, True, "refrigerator"),
+    ("Kir yuvish mashinasi", "Стиральная машина", "Washing machine", 2, 1, "3800000", 1, 25, False, "laundry"),
 ]
 
 
@@ -138,7 +144,8 @@ def seed() -> None:
         db.flush()  # assign PKs to categories/companies
 
         # Products
-        for (nu, nr, ne, cat_i, fac_i, price, min_qty, stock, featured) in PRODUCTS:
+        for lock, row in enumerate(PRODUCTS, start=1):
+            nu, nr, ne, cat_i, fac_i, price, min_qty, stock, featured, keyword = row
             product = Product(
                 factory_id=companies[fac_i].id,
                 category_id=categories[cat_i].id,
@@ -153,9 +160,7 @@ def seed() -> None:
                 stock_qty=stock,
                 is_featured=featured,
             )
-            product.images.append(
-                ProductImage(url=f"{settings.MEDIA_URL}/placeholder.png", sort_order=0)
-            )
+            product.images.append(ProductImage(url=_img(keyword, lock), sort_order=0))
             db.add(product)
 
         db.commit()

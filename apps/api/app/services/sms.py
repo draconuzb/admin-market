@@ -7,11 +7,21 @@ credentials. The real Eskiz.uz provider is wired in Phase 5.
 from __future__ import annotations
 
 import logging
+import sys
 from abc import ABC, abstractmethod
 
 from app.core.config import settings
 
 logger = logging.getLogger("sms")
+
+# Ensure the dev console provider's OTP is visible in server logs regardless of
+# the surrounding (e.g. uvicorn) logging config: attach our own stdout handler once.
+if not logger.handlers:
+    _handler = logging.StreamHandler(sys.stdout)
+    _handler.setFormatter(logging.Formatter("%(levelname)s [sms] %(message)s"))
+    logger.addHandler(_handler)
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
 
 
 class SmsProvider(ABC):

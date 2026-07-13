@@ -1,0 +1,22 @@
+# Caddy serves the Flutter web build and reverse-proxies the API.
+# Automatic HTTPS via Let's Encrypt (needs ports 80/443 open and DNS pointing here).
+#
+# The domain is read from the DOMAIN env var (set in .env). For local testing
+# you can set DOMAIN=localhost (Caddy issues a self-signed cert).
+
+{$DOMAIN} {
+	encode gzip zstd
+
+	# API, media uploads, and API docs go to the FastAPI service.
+	@backend path /api/* /media/* /docs /openapi.json /health
+	handle @backend {
+		reverse_proxy api:8000
+	}
+
+	# Everything else is the Flutter web SPA (client-side routing fallback).
+	handle {
+		root * /srv/web
+		try_files {path} /index.html
+		file_server
+	}
+}

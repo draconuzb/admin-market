@@ -29,3 +29,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/translations/
+    - assets/logo.png
+    - assets/logo_512.png

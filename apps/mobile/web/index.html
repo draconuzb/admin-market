@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Admin Market — B2B ulgurji bozor.">
+  <meta name="theme-color" content="#1E4FD8">
 
-  <!-- iOS meta tags & icons -->
+  <!-- iOS / PWA meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="admin_market">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Admin Market">
+  <link rel="apple-touch-icon" href="icons/Icon-apple-180.png">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>admin_market</title>
+  <title>Admin Market</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #1E4FD8; }
+    #boot {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 22px;
+      background: linear-gradient(135deg, #1E4FD8, #3A6BF0);
+      transition: opacity .35s ease; z-index: 9999;
+    }
+    #boot img { width: 96px; height: 96px; border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+    #boot .name { color: #fff; font: 700 22px system-ui, -apple-system, sans-serif;
+      letter-spacing: .3px; }
+    #boot .spin { width: 26px; height: 26px; border: 3px solid rgba(255,255,255,.35);
+      border-top-color: #fff; border-radius: 50%; animation: r 0.9s linear infinite; }
+    @keyframes r { to { transform: rotate(360deg); } }
+    #boot.hide { opacity: 0; pointer-events: none; }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+  <div id="boot">
+    <img src="icons/Icon-192.png" alt="Admin Market"/>
+    <div class="name">Admin Market</div>
+    <div class="spin"></div>
+  </div>
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <script>
+    // Hide the boot splash once Flutter renders its first frame.
+    window.addEventListener('flutter-first-frame', function () {
+      var el = document.getElementById('boot');
+      if (el) { el.classList.add('hide'); setTimeout(function () { el.remove(); }, 400); }
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

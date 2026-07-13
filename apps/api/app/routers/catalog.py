@@ -63,6 +63,7 @@ def list_products(
     stmt = (
         select(Product)
         .where(*conditions)
+        .options(selectinload(Product.images))
         .order_by(order_by, Product.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)

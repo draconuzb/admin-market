@@ -19,8 +19,10 @@ final authControllerProvider =
 class AuthController extends Notifier<AuthState> {
   @override
   AuthState build() {
-    // Kick off session restore; state starts unknown so the splash shows.
-    _restore();
+    // Kick off session restore AFTER build completes — scheduling with a
+    // microtask avoids mutating state during build (which Riverpod forbids and
+    // would otherwise leave the app stuck on the splash screen).
+    Future.microtask(_restore);
     return const AuthState(AuthStatus.unknown);
   }
 
