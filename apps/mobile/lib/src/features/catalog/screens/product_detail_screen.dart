@@ -9,8 +9,10 @@ import '../../../models/catalog.dart';
 import '../../../shared/widgets/async_views.dart';
 import '../../../shared/widgets/product_card.dart';
 import '../../../shared/widgets/qty_stepper.dart';
+import '../../../shared/widgets/star_rating.dart';
 import '../../cart/cart_controller.dart';
 import '../catalog_providers.dart';
+import 'reviews_section.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
   const ProductDetailScreen({super.key, required this.productId});
@@ -138,6 +140,18 @@ class _DetailState extends ConsumerState<_Detail> {
                         color: AppTheme.accent,
                       ),
                     ),
+                    if (p.ratingCount > 0) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          StarRating(rating: p.ratingAvg, size: 18),
+                          const SizedBox(width: 6),
+                          Text('${p.ratingAvg} (${p.ratingCount})',
+                              style: const TextStyle(
+                                  fontSize: 13, color: AppTheme.textSecondary)),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 16),
 
                     // Tags
@@ -211,6 +225,10 @@ class _DetailState extends ConsumerState<_Detail> {
                           style: const TextStyle(
                               color: AppTheme.textSecondary, height: 1.5, fontSize: 15)),
                     ],
+
+                    // Reviews
+                    const SizedBox(height: 24),
+                    ReviewsSection(productId: p.id),
                   ],
                 ),
               ),

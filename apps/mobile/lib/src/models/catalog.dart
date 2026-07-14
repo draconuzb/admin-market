@@ -56,6 +56,8 @@ class Product {
     this.descriptionEn,
     this.images = const [],
     this.factory,
+    this.ratingAvg = 0,
+    this.ratingCount = 0,
   });
 
   final int id;
@@ -74,6 +76,8 @@ class Product {
   final String? descriptionEn;
   final List<String> images;
   final Factory? factory;
+  final num ratingAvg;
+  final int ratingCount;
 
   bool get inStock => stockQty > 0;
 
@@ -108,5 +112,7 @@ class Product {
         factory: j['factory'] != null
             ? Factory.fromJson(j['factory'] as Map<String, dynamic>)
             : null,
+        ratingAvg: parseNum(j['rating_avg']),
+        ratingCount: j['rating_count'] as int? ?? 0,
       );
 }

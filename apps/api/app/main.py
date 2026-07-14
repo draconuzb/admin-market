@@ -15,6 +15,7 @@ from app.routers import (
     notifications,
     orders,
     profile,
+    reviews,
 )
 
 app = FastAPI(
@@ -38,6 +39,7 @@ app.mount(settings.MEDIA_URL, StaticFiles(directory=str(_media_root)), name="med
 
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(catalog.router, prefix=settings.API_V1_PREFIX)
+app.include_router(reviews.router, prefix=settings.API_V1_PREFIX)
 app.include_router(cart.router, prefix=settings.API_V1_PREFIX)
 app.include_router(orders.router, prefix=settings.API_V1_PREFIX)
 app.include_router(favorites.router, prefix=settings.API_V1_PREFIX)

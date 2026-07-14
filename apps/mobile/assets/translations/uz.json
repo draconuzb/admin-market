@@ -62,6 +62,12 @@
     "title": "Sevimlilar",
     "empty": "Sevimli mahsulotlar yo'q"
   },
+  "reviews": {
+    "title": "Sharhlar",
+    "write": "Sharh yozish",
+    "empty": "Hali sharhlar yo'q",
+    "comment_hint": "Fikringizni yozing (ixtiyoriy)"
+  },
   "home": {
     "categories": "Kategoriyalar",
     "featured": "Tavsiya etilgan",

@@ -52,6 +52,8 @@ class ProductDetailOut(ProductOut):
     description_ru: str | None
     description_en: str | None
     factory: FactoryBrief
+    rating_avg: float = 0
+    rating_count: int = 0
 
 
 class FactoryOut(BaseModel):

@@ -62,6 +62,12 @@
     "title": "Favorites",
     "empty": "No favorite products"
   },
+  "reviews": {
+    "title": "Reviews",
+    "write": "Write a review",
+    "empty": "No reviews yet",
+    "comment_hint": "Share your opinion (optional)"
+  },
   "home": {
     "categories": "Categories",
     "featured": "Featured",

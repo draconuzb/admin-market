@@ -87,7 +87,7 @@ def list_products(
 
 
 @router.get("/products/{product_id}", response_model=ProductDetailOut)
-def get_product(product_id: int, db: Session = Depends(get_db)) -> Product:
+def get_product(product_id: int, db: Session = Depends(get_db)) -> ProductDetailOut:
     stmt = (
         select(Product)
         .where(Product.id == product_id, Product.is_active.is_(True))
@@ -99,7 +99,13 @@ def get_product(product_id: int, db: Session = Depends(get_db)) -> Product:
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "product_not_found", "message": "Product not found"},
         )
-    return product
+    from app.routers.reviews import rating_summary
+
+    summary = rating_summary(db, product_id)
+    detail = ProductDetailOut.model_validate(product)
+    detail.rating_avg = summary.average
+    detail.rating_count = summary.count
+    return detail
 
 
 def _factory_query():
