@@ -146,6 +146,20 @@ def test_product_detail_404_for_inactive(client, catalog_data):
     assert resp.status_code == 404
 
 
+def test_products_price_range_filter(client, catalog_data):
+    # Sugar=100000, Flour=50000 (Rice inactive). Filter 60000..200000 -> only Sugar.
+    resp = client.get("/api/v1/products", params={"min_price": 60000, "max_price": 200000})
+    body = resp.json()
+    assert body["total"] == 1
+    assert body["items"][0]["name_uz"] == "Shakar"
+
+
+def test_products_in_stock_filter(client, catalog_data):
+    # Both active products (Shakar, Un) have stock > 0.
+    resp = client.get("/api/v1/products", params={"in_stock": "true"})
+    assert resp.json()["total"] == 2
+
+
 def test_list_factories(client, catalog_data):
     resp = client.get("/api/v1/factories")
     assert resp.status_code == 200

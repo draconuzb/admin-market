@@ -93,14 +93,38 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () => _showSortSheet(context),
-                    child: Container(
-                      width: 40, height: 40,
-                      decoration: BoxDecoration(
-                        color: AppTheme.fill.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.tune_rounded,
-                          color: AppTheme.textSecondary, size: 20),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 40, height: 40,
+                          decoration: BoxDecoration(
+                            color: _filter.activeCount > 0
+                                ? AppTheme.accent
+                                : AppTheme.fill.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.tune_rounded,
+                              color: _filter.activeCount > 0
+                                  ? Colors.white
+                                  : AppTheme.textSecondary,
+                              size: 20),
+                        ),
+                        if (_filter.activeCount > 0)
+                          Positioned(
+                            right: -4, top: -4,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                              decoration: const BoxDecoration(
+                                  color: AppTheme.danger, shape: BoxShape.circle),
+                              alignment: Alignment.center,
+                              child: Text('${_filter.activeCount}',
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700)),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ],
@@ -190,44 +214,120 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   }
 
   void _showSortSheet(BuildContext ctx) {
+    var sort = _filter.sort;
+    var inStock = _filter.inStock;
+    final minC = TextEditingController(text: _filter.minPrice?.toString() ?? '');
+    final maxC = TextEditingController(text: _filter.maxPrice?.toString() ?? '');
+
     showModalBottomSheet(
       context: ctx,
+      isScrollControlled: true,
       backgroundColor: AppTheme.surface,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 36, height: 4,
-              margin: const EdgeInsets.only(top: 10, bottom: 16),
-              decoration: BoxDecoration(
-                color: AppTheme.separator,
-                borderRadius: BorderRadius.circular(2),
+      builder: (sheetCtx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(sheetCtx).viewInsets.bottom),
+        child: StatefulBuilder(
+          builder: (sheetCtx, setSheet) => SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36, height: 4,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                          color: AppTheme.separator, borderRadius: BorderRadius.circular(2)),
+                    ),
+                  ),
+                  Text('catalog.sort'.tr(),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      for (final (v, l) in [
+                        ('newest', 'catalog.sort_newest'),
+                        ('price_asc', 'catalog.sort_price_asc'),
+                        ('price_desc', 'catalog.sort_price_desc'),
+                      ])
+                        ChoiceChip(
+                          label: Text(l.tr()),
+                          selected: sort == v,
+                          onSelected: (_) => setSheet(() => sort = v),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text('catalog.price_range'.tr(),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: minC,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(hintText: 'catalog.price_from'.tr()),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: maxC,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(hintText: 'catalog.price_to'.tr()),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text('catalog.in_stock'.tr(), style: const TextStyle(fontSize: 15)),
+                    value: inStock,
+                    activeThumbColor: AppTheme.accent,
+                    onChanged: (v) => setSheet(() => inStock = v),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            setState(() => _filter = _filter.withAdvanced(
+                                minPrice: null, maxPrice: null, inStock: false, sort: 'newest'));
+                            Navigator.pop(sheetCtx);
+                          },
+                          child: Text('catalog.reset'.tr()),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () {
+                            setState(() => _filter = _filter.withAdvanced(
+                                  minPrice: num.tryParse(minC.text.trim()),
+                                  maxPrice: num.tryParse(maxC.text.trim()),
+                                  inStock: inStock,
+                                  sort: sort,
+                                ));
+                            Navigator.pop(sheetCtx);
+                          },
+                          child: Text('catalog.apply'.tr()),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Text('catalog.sort'.tr(),
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            _sortTile('catalog.sort_newest'.tr(), 'newest'),
-            _sortTile('catalog.sort_price_asc'.tr(), 'price_asc'),
-            _sortTile('catalog.sort_price_desc'.tr(), 'price_desc'),
-            const SizedBox(height: 12),
-          ],
+          ),
         ),
       ),
     );
   }
-
-  Widget _sortTile(String text, String value) => ListTile(
-        title: Text(text, style: const TextStyle(fontSize: 16)),
-        trailing: _filter.sort == value
-            ? const Icon(Icons.check, color: AppTheme.accent, size: 20)
-            : null,
-        onTap: () {
-          setState(() => _filter = _filter.copyWith(sort: value));
-          Navigator.pop(context);
-        },
-      );
 }

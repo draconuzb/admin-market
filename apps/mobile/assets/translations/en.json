@@ -74,7 +74,13 @@
     "sort_price_desc": "Price: high to low",
     "filter_category": "Category",
     "filter_all": "All",
-    "empty": "No products found"
+    "empty": "No products found",
+    "price_range": "Price range",
+    "price_from": "from",
+    "price_to": "to",
+    "in_stock": "In stock only",
+    "apply": "Apply",
+    "reset": "Reset"
   },
   "product": {
     "min_order": "Min order",

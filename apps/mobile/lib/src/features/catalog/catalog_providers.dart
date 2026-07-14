@@ -28,11 +28,26 @@ final productDetailProvider =
 
 /// Immutable filter for the catalog list.
 class CatalogFilter {
-  const CatalogFilter({this.search, this.categoryId, this.factoryId, this.sort = 'newest'});
+  const CatalogFilter({
+    this.search,
+    this.categoryId,
+    this.factoryId,
+    this.minPrice,
+    this.maxPrice,
+    this.inStock = false,
+    this.sort = 'newest',
+  });
   final String? search;
   final int? categoryId;
   final int? factoryId;
+  final num? minPrice;
+  final num? maxPrice;
+  final bool inStock;
   final String sort;
+
+  /// Count of active advanced filters (for the filter button badge).
+  int get activeCount =>
+      (minPrice != null ? 1 : 0) + (maxPrice != null ? 1 : 0) + (inStock ? 1 : 0);
 
   CatalogFilter copyWith({
     String? search,
@@ -45,6 +60,22 @@ class CatalogFilter {
       search: search ?? this.search,
       categoryId: clearCategory ? null : (categoryId ?? this.categoryId),
       factoryId: factoryId ?? this.factoryId,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      inStock: inStock,
+      sort: sort ?? this.sort,
+    );
+  }
+
+  /// Replace the advanced filters (price + stock) from the filter sheet.
+  CatalogFilter withAdvanced({num? minPrice, num? maxPrice, bool? inStock, String? sort}) {
+    return CatalogFilter(
+      search: search,
+      categoryId: categoryId,
+      factoryId: factoryId,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      inStock: inStock ?? this.inStock,
       sort: sort ?? this.sort,
     );
   }
@@ -55,10 +86,14 @@ class CatalogFilter {
       other.search == search &&
       other.categoryId == categoryId &&
       other.factoryId == factoryId &&
+      other.minPrice == minPrice &&
+      other.maxPrice == maxPrice &&
+      other.inStock == inStock &&
       other.sort == sort;
 
   @override
-  int get hashCode => Object.hash(search, categoryId, factoryId, sort);
+  int get hashCode =>
+      Object.hash(search, categoryId, factoryId, minPrice, maxPrice, inStock, sort);
 }
 
 final catalogListProvider =
@@ -67,6 +102,9 @@ final catalogListProvider =
         search: filter.search,
         categoryId: filter.categoryId,
         factoryId: filter.factoryId,
+        minPrice: filter.minPrice,
+        maxPrice: filter.maxPrice,
+        inStock: filter.inStock,
         sort: filter.sort,
       );
 });

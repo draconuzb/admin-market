@@ -37,6 +37,9 @@ def list_products(
     search: str | None = Query(default=None, description="Match against product name"),
     category_id: int | None = None,
     factory_id: int | None = None,
+    min_price: float | None = Query(default=None, ge=0),
+    max_price: float | None = Query(default=None, ge=0),
+    in_stock: bool = Query(default=False, description="Only products with stock > 0"),
     sort: str = Query(default="newest"),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
@@ -47,6 +50,12 @@ def list_products(
         conditions.append(Product.category_id == category_id)
     if factory_id is not None:
         conditions.append(Product.factory_id == factory_id)
+    if min_price is not None:
+        conditions.append(Product.price >= min_price)
+    if max_price is not None:
+        conditions.append(Product.price <= max_price)
+    if in_stock:
+        conditions.append(Product.stock_qty > 0)
     if search:
         like = f"%{search.strip()}%"
         conditions.append(

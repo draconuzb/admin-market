@@ -74,7 +74,13 @@
     "sort_price_desc": "Цена: по убыванию",
     "filter_category": "Категория",
     "filter_all": "Все",
-    "empty": "Товары не найдены"
+    "empty": "Товары не найдены",
+    "price_range": "Диапазон цен",
+    "price_from": "от",
+    "price_to": "до",
+    "in_stock": "Только в наличии",
+    "apply": "Применить",
+    "reset": "Сбросить"
   },
   "product": {
     "min_order": "Мин. заказ",

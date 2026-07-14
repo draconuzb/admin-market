@@ -74,7 +74,13 @@
     "sort_price_desc": "Narx: qimmatdan",
     "filter_category": "Kategoriya",
     "filter_all": "Barchasi",
-    "empty": "Mahsulot topilmadi"
+    "empty": "Mahsulot topilmadi",
+    "price_range": "Narx oralig'i",
+    "price_from": "dan",
+    "price_to": "gacha",
+    "in_stock": "Faqat mavjud",
+    "apply": "Qo'llash",
+    "reset": "Tozalash"
   },
   "product": {
     "min_order": "Minimal buyurtma",
