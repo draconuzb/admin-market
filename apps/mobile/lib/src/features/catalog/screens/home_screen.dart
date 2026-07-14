@@ -165,6 +165,34 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
 
+            // ── Discounts ──
+            ...ref.watch(discountedProductsProvider).maybeWhen(
+              data: (list) => list.isEmpty
+                  ? const []
+                  : [
+                      SliverToBoxAdapter(child: _section('home.discounts'.tr())),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 250,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: list.length,
+                            separatorBuilder: (_, __) => const SizedBox(width: 12),
+                            itemBuilder: (_, i) => SizedBox(
+                              width: 160,
+                              child: ProductCard(
+                                product: list[i],
+                                onTap: () => context.push('/product/${list[i].id}'),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+              orElse: () => const [],
+            ),
+
             // ── Featured ──
             SliverToBoxAdapter(child: _section('home.featured'.tr())),
             featured.when(

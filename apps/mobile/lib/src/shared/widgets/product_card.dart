@@ -123,7 +123,12 @@ class ProductCard extends ConsumerWidget {
                     productName: product.name(lang),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                   ),
-                  if (product.isFeatured)
+                  if (product.hasDiscount)
+                    Positioned(
+                      top: 8, left: 8,
+                      child: _pill('-${product.discountPercent}%', AppTheme.danger, Icons.local_offer_rounded),
+                    )
+                  else if (product.isFeatured)
                     Positioned(
                       top: 8, left: 8,
                       child: _pill('home.featured'.tr(), AppTheme.warning, Icons.star_rounded),
@@ -172,13 +177,22 @@ class ProductCard extends ConsumerWidget {
                     ),
                     const Spacer(),
                     Text(
-                      formatPrice(product.price),
+                      formatPrice(product.salePrice),
                       style: const TextStyle(
                         color: AppTheme.accent,
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
                       ),
                     ),
+                    if (product.hasDiscount)
+                      Text(
+                        formatPrice(product.price),
+                        style: const TextStyle(
+                          color: AppTheme.textTertiary,
+                          fontSize: 12,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
                     const SizedBox(height: 2),
                     Text(
                       '${'product.min_order'.tr()}: ${product.minOrderQty}',

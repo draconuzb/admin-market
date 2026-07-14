@@ -28,6 +28,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _nameEn = TextEditingController();
   final _descUz = TextEditingController();
   final _price = TextEditingController();
+  final _discount = TextEditingController(text: '0');
   final _minQty = TextEditingController(text: '1');
   final _stock = TextEditingController(text: '0');
   int? _categoryId;
@@ -51,6 +52,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         _nameEn.text = p.nameEn;
         _descUz.text = p.descriptionUz ?? '';
         _price.text = p.price.toString();
+        _discount.text = '${p.discountPercent}';
         _minQty.text = '${p.minOrderQty}';
         _stock.text = '${p.stockQty}';
         _categoryId = p.categoryId;
@@ -132,7 +134,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
   @override
   void dispose() {
-    for (final c in [_nameUz, _nameRu, _nameEn, _descUz, _price, _minQty, _stock]) {
+    for (final c in [_nameUz, _nameRu, _nameEn, _descUz, _price, _discount, _minQty, _stock]) {
       c.dispose();
     }
     super.dispose();
@@ -154,6 +156,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       'name_en': _nameEn.text.trim(),
       'description_uz': _descUz.text.trim(),
       'price': _price.text.trim(),
+      'discount_percent': int.tryParse(_discount.text.trim()) ?? 0,
       'min_order_qty': int.tryParse(_minQty.text.trim()) ?? 1,
       'stock_qty': int.tryParse(_stock.text.trim()) ?? 0,
     };
@@ -212,6 +215,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 _text(_nameEn, 'EN', required: true),
                 _text(_descUz, 'UZ ...', maxLines: 2),
                 _text(_price, 'factory.field_price'.tr(), number: true, required: true),
+                _text(_discount, 'factory.field_discount'.tr(), number: true),
                 _text(_minQty, 'factory.field_min_qty'.tr(), number: true, required: true),
                 _text(_stock, 'factory.field_stock'.tr(), number: true, required: true),
                 const SizedBox(height: 20),

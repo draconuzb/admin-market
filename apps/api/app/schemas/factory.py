@@ -14,6 +14,7 @@ class ProductCreateIn(BaseModel):
     description_ru: str | None = None
     description_en: str | None = None
     price: Decimal = Field(gt=0)
+    discount_percent: int = Field(default=0, ge=0, le=100)
     min_order_qty: int = Field(default=1, ge=1)
     stock_qty: int = Field(default=0, ge=0)
 
@@ -28,6 +29,7 @@ class ProductUpdateIn(BaseModel):
     description_ru: str | None = None
     description_en: str | None = None
     price: Decimal | None = Field(default=None, gt=0)
+    discount_percent: int | None = Field(default=None, ge=0, le=100)
     min_order_qty: int | None = Field(default=None, ge=1)
     stock_qty: int | None = Field(default=None, ge=0)
     is_active: bool | None = None
@@ -44,6 +46,8 @@ class FactoryProductOut(BaseModel):
     description_ru: str | None
     description_en: str | None
     price: Decimal
+    discount_percent: int
+    sale_price: Decimal
     min_order_qty: int
     stock_qty: int
     is_active: bool

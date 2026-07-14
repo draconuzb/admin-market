@@ -47,6 +47,8 @@ class Product {
     required this.nameRu,
     required this.nameEn,
     required this.price,
+    this.discountPercent = 0,
+    num? salePrice,
     required this.minOrderQty,
     required this.stockQty,
     required this.isFeatured,
@@ -58,7 +60,7 @@ class Product {
     this.factory,
     this.ratingAvg = 0,
     this.ratingCount = 0,
-  });
+  }) : _salePrice = salePrice;
 
   final int id;
   final int factoryId;
@@ -67,9 +69,14 @@ class Product {
   final String nameRu;
   final String nameEn;
   final num price;
+  final int discountPercent;
+  final num? _salePrice;
   final int minOrderQty;
   final int stockQty;
   final bool isFeatured;
+
+  bool get hasDiscount => discountPercent > 0;
+  num get salePrice => _salePrice ?? price;
   final bool isActive;
   final String? descriptionUz;
   final String? descriptionRu;
@@ -101,6 +108,8 @@ class Product {
         nameRu: j['name_ru'] as String,
         nameEn: j['name_en'] as String,
         price: parseNum(j['price']),
+        discountPercent: j['discount_percent'] as int? ?? 0,
+        salePrice: j['sale_price'] != null ? parseNum(j['sale_price']) : null,
         minOrderQty: j['min_order_qty'] as int,
         stockQty: j['stock_qty'] as int,
         isFeatured: j['is_featured'] as bool? ?? false,

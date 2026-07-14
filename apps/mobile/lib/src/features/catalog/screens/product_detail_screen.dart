@@ -133,12 +133,42 @@ class _DetailState extends ConsumerState<_Detail> {
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w700, height: 1.2)),
                     const SizedBox(height: 10),
-                    Text(
-                      formatPrice(p.price),
-                      style: const TextStyle(
-                        fontSize: 28, fontWeight: FontWeight.w800,
-                        color: AppTheme.accent,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          formatPrice(p.salePrice),
+                          style: const TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.w800,
+                            color: AppTheme.accent,
+                          ),
+                        ),
+                        if (p.hasDiscount) ...[
+                          const SizedBox(width: 10),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              formatPrice(p.price),
+                              style: const TextStyle(
+                                fontSize: 16, color: AppTheme.textTertiary,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: AppTheme.danger,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text('-${p.discountPercent}%',
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),
+                          ),
+                        ],
+                      ],
                     ),
                     if (p.ratingCount > 0) ...[
                       const SizedBox(height: 8),

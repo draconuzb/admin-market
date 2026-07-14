@@ -21,6 +21,12 @@ final factoriesProvider = FutureProvider<List<Factory>>((ref) async {
   return page.items;
 });
 
+/// Discounted products for the home "Sale" section.
+final discountedProductsProvider = FutureProvider<List<Product>>((ref) async {
+  final page = await ref.watch(catalogRepositoryProvider).products(onSale: true, pageSize: 10);
+  return page.items;
+});
+
 final productDetailProvider =
     FutureProvider.family<Product, int>((ref, id) {
   return ref.watch(catalogRepositoryProvider).product(id);

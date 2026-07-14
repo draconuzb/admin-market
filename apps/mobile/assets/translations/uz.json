@@ -73,7 +73,8 @@
     "featured": "Tavsiya etilgan",
     "factories": "Zavodlar",
     "see_all": "Barchasi",
-    "subtitle": "Ulgurji bozor — zavod narxida xarid qiling{}"
+    "subtitle": "Ulgurji bozor — zavod narxida xarid qiling{}",
+    "discounts": "Chegirmalar"
   },
   "catalog": {
     "title": "Katalog",
@@ -174,7 +175,8 @@
     "field_price": "Narx",
     "field_min_qty": "Minimal buyurtma",
     "field_stock": "Zaxira",
-    "field_active": "Faol"
+    "field_active": "Faol",
+    "field_discount": "Chegirma (%)"
   },
   "admin": {
     "nav_registrations": "Ro'yxatlar",

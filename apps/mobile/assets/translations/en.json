@@ -73,7 +73,8 @@
     "featured": "Featured",
     "factories": "Factories",
     "see_all": "See all",
-    "subtitle": "Wholesale marketplace — buy at factory prices{}"
+    "subtitle": "Wholesale marketplace — buy at factory prices{}",
+    "discounts": "Discounts"
   },
   "catalog": {
     "title": "Catalog",
@@ -174,7 +175,8 @@
     "field_price": "Price",
     "field_min_qty": "Min order qty",
     "field_stock": "Stock",
-    "field_active": "Active"
+    "field_active": "Active",
+    "field_discount": "Discount (%)"
   },
   "admin": {
     "nav_registrations": "Registrations",

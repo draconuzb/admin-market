@@ -176,6 +176,8 @@ def seed() -> None:
                 description_ru=f"{nr} — оптовая цена.",
                 description_en=f"{ne} — wholesale price.",
                 price=Decimal(price),
+                # Demo promotion: featured products carry a discount.
+                discount_percent=(15 if featured else 0),
                 min_order_qty=min_qty,
                 stock_qty=stock,
                 is_featured=featured,

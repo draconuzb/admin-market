@@ -54,7 +54,7 @@ def _serialize(db: Session, user: User) -> CartOut:
     factories: set[int] = set()
     for ci in items:
         p = ci.product
-        unit_price = Decimal(str(p.price))
+        unit_price = p.sale_price  # honors any active discount
         subtotal = unit_price * ci.quantity
         total += subtotal
         factories.add(p.factory_id)

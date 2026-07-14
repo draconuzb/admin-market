@@ -40,6 +40,7 @@ def list_products(
     min_price: float | None = Query(default=None, ge=0),
     max_price: float | None = Query(default=None, ge=0),
     in_stock: bool = Query(default=False, description="Only products with stock > 0"),
+    on_sale: bool = Query(default=False, description="Only discounted products"),
     sort: str = Query(default="newest"),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
@@ -56,6 +57,8 @@ def list_products(
         conditions.append(Product.price <= max_price)
     if in_stock:
         conditions.append(Product.stock_qty > 0)
+    if on_sale:
+        conditions.append(Product.discount_percent > 0)
     if search:
         like = f"%{search.strip()}%"
         conditions.append(

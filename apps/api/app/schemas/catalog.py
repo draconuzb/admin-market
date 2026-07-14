@@ -39,6 +39,8 @@ class ProductOut(BaseModel):
     name_ru: str
     name_en: str
     price: Decimal
+    discount_percent: int = 0
+    sale_price: Decimal
     min_order_qty: int
     stock_qty: int
     is_featured: bool

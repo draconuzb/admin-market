@@ -67,7 +67,7 @@ def checkout(db: Session, buyer: User, comment: str | None) -> list[Order]:
         )
         total = Decimal("0")
         for ci, product in lines:
-            unit_price = Decimal(str(product.price))
+            unit_price = product.sale_price  # honors any active discount
             subtotal = unit_price * ci.quantity
             total += subtotal
             order.items.append(

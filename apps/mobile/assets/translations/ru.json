@@ -73,7 +73,8 @@
     "featured": "Рекомендуемые",
     "factories": "Заводы",
     "see_all": "Все",
-    "subtitle": "Оптовый маркетплейс — покупайте по заводским ценам{}"
+    "subtitle": "Оптовый маркетплейс — покупайте по заводским ценам{}",
+    "discounts": "Скидки"
   },
   "catalog": {
     "title": "Каталог",
@@ -174,7 +175,8 @@
     "field_price": "Цена",
     "field_min_qty": "Мин. заказ",
     "field_stock": "Остаток",
-    "field_active": "Активен"
+    "field_active": "Активен",
+    "field_discount": "Скидка (%)"
   },
   "admin": {
     "nav_registrations": "Заявки",

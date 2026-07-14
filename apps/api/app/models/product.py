@@ -42,10 +42,22 @@ class Product(Base, TimestampMixin):
     description_ru: Mapped[str | None] = mapped_column(Text, default=None)
     description_en: Mapped[str | None] = mapped_column(Text, default=None)
     price: Mapped[float] = mapped_column(Numeric(14, 2))
+    # Promotion: 0..100. Effective price is `sale_price`.
+    discount_percent: Mapped[int] = mapped_column(Integer, default=0)
     min_order_qty: Mapped[int] = mapped_column(Integer, default=1)
     stock_qty: Mapped[int] = mapped_column(Integer, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+
+    @property
+    def sale_price(self):
+        """Effective price after any discount (Decimal, 2dp)."""
+        from decimal import ROUND_HALF_UP, Decimal
+
+        base = Decimal(str(self.price))
+        if self.discount_percent:
+            base = base * (100 - self.discount_percent) / 100
+        return base.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     factory: Mapped["Company"] = relationship(back_populates="products")
     category: Mapped["Category"] = relationship(back_populates="products")
