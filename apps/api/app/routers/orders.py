@@ -6,7 +6,7 @@ from app.core.database import get_db
 from app.core.deps import get_active_user
 from app.models import Order, User
 from app.models.enums import BUYER_ROLES, OrderStatus, UserRole
-from app.schemas.common import Page
+from app.schemas.common import Message, Page
 from app.schemas.order import CheckoutIn, CheckoutOut, OrderOut, StatusUpdateIn
 from app.services import orders as order_service
 
@@ -117,3 +117,19 @@ def update_status(
 ) -> Order:
     order = _get_visible_order(db, user, order_id)
     return order_service.change_status(db, order, payload.status, user)
+
+
+@router.post("/{order_id}/reorder", response_model=Message)
+def reorder(
+    order_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_active_user),
+) -> Message:
+    if user.role not in BUYER_ROLES:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "forbidden", "message": "Only buyers can reorder"},
+        )
+    order = _get_visible_order(db, user, order_id)
+    added = order_service.reorder(db, user, order)
+    return Message(code="reordered", message=f"{added} items added to cart")

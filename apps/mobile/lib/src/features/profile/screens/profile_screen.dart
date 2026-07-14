@@ -71,6 +71,14 @@ class ProfileScreen extends ConsumerWidget {
           // ── Account section ──
           IosGroupedSection(
             children: [
+              if (user != null && user.isBuyer)
+                ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.favorite_border, size: 22, color: AppTheme.accent),
+                  title: Text('favorites.title'.tr(), style: const TextStyle(fontSize: 16)),
+                  trailing: const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
+                  onTap: () => context.push('/favorites'),
+                ),
               ListTile(
                 dense: true,
                 leading: const Icon(Icons.person_outline, size: 22, color: AppTheme.accent),

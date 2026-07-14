@@ -58,6 +58,10 @@
     "read_all": "Hammasini o'qildi",
     "empty": "Bildirishnomalar yo'q"
   },
+  "favorites": {
+    "title": "Sevimlilar",
+    "empty": "Sevimli mahsulotlar yo'q"
+  },
   "home": {
     "categories": "Kategoriyalar",
     "featured": "Tavsiya etilgan",
@@ -109,6 +113,8 @@
     "commission": "Komissiya",
     "items": "Mahsulotlar",
     "cancel_order": "Buyurtmani bekor qilish",
+    "reorder": "Qayta buyurtma qilish",
+    "reordered": "Mahsulotlar savatga qo'shildi",
     "status": {
       "new": "Yangi",
       "confirmed": "Tasdiqlangan",

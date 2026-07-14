@@ -31,4 +31,6 @@ class OrdersRepository {
     final resp = await _api.patch('/orders/$id/status', data: {'status': status});
     return Order.fromJson(resp.data as Map<String, dynamic>);
   }
+
+  Future<void> reorder(int id) => _api.post('/orders/$id/reorder');
 }

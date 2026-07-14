@@ -20,6 +20,7 @@ import '../features/cart/screens/checkout_screen.dart';
 import '../features/catalog/screens/catalog_screen.dart';
 import '../features/catalog/screens/home_screen.dart';
 import '../features/catalog/screens/product_detail_screen.dart';
+import '../features/favorites/screens/favorites_screen.dart';
 import '../features/factory/screens/factory_order_detail_screen.dart';
 import '../features/factory/screens/factory_orders_screen.dart';
 import '../features/factory/screens/factory_products_screen.dart';
@@ -52,7 +53,7 @@ String _roleHome(String? role) => switch (role) {
 /// Route prefixes each role is allowed to view.
 const _buyerPrefixes = [
   '/home', '/catalog', '/cart', '/orders', '/order', '/products', '/product',
-  '/checkout', '/profile',
+  '/checkout', '/profile', '/favorites',
 ];
 
 bool _allowed(String role, String loc) {
@@ -132,6 +133,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         pageBuilder: (_, s) => _slide(s, const NotificationsScreen()),
+      ),
+      GoRoute(
+        path: '/favorites',
+        pageBuilder: (_, s) => _slide(s, const FavoritesScreen()),
       ),
       GoRoute(
         path: '/profile/edit',

@@ -58,6 +58,10 @@
     "read_all": "Mark all read",
     "empty": "No notifications"
   },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "No favorite products"
+  },
   "home": {
     "categories": "Categories",
     "featured": "Featured",
@@ -109,6 +113,8 @@
     "commission": "Commission",
     "items": "Items",
     "cancel_order": "Cancel order",
+    "reorder": "Reorder",
+    "reordered": "Items added to cart",
     "status": {
       "new": "New",
       "confirmed": "Confirmed",

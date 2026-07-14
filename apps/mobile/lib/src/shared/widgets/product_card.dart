@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/config.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
+import '../../features/favorites/favorites_controller.dart';
 import '../../models/catalog.dart';
 
 /// iOS-style network image with shimmer loading and elegant placeholder.
@@ -89,14 +91,15 @@ class _IOSPlaceholder extends StatelessWidget {
 }
 
 /// iOS-style product card with subtle shadow and clean typography.
-class ProductCard extends StatelessWidget {
+class ProductCard extends ConsumerWidget {
   const ProductCard({super.key, required this.product, required this.onTap});
   final Product product;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final lang = context.locale.languageCode;
+    final isFav = ref.watch(favoriteIdsProvider).valueOrNull?.contains(product.id) ?? false;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -130,6 +133,24 @@ class ProductCard extends StatelessWidget {
                       top: 8, right: 8,
                       child: _pill('product.out_of_stock'.tr(), AppTheme.danger, Icons.close),
                     ),
+                  Positioned(
+                    bottom: 6, right: 6,
+                    child: GestureDetector(
+                      onTap: () => ref.read(favoriteIdsProvider.notifier).toggle(product.id),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          size: 18,
+                          color: isFav ? AppTheme.danger : Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

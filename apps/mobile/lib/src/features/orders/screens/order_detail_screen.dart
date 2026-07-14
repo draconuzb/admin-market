@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_exception.dart';
 import '../../../core/format.dart';
@@ -8,6 +9,7 @@ import '../../../core/theme.dart';
 import '../../../providers.dart';
 import '../../../shared/widgets/async_views.dart';
 import '../../../shared/widgets/status_badge.dart';
+import '../../cart/cart_controller.dart';
 import '../orders_providers.dart';
 
 class OrderDetailScreen extends ConsumerWidget {
@@ -19,6 +21,22 @@ class OrderDetailScreen extends ConsumerWidget {
       await ref.read(ordersRepositoryProvider).updateStatus(orderId, 'cancelled');
       ref.invalidate(orderDetailProvider(orderId));
       ref.invalidate(ordersListProvider);
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
+  }
+
+  Future<void> _reorder(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(ordersRepositoryProvider).reorder(orderId);
+      await ref.read(cartControllerProvider.notifier).reload();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('orders.reordered'.tr())));
+        context.go('/cart');
+      }
     } on ApiException catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
@@ -149,8 +167,14 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ],
 
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: () => _reorder(context, ref),
+              icon: const Icon(Icons.refresh, size: 20),
+              label: Text('orders.reorder'.tr()),
+            ),
             if (o.canBuyerCancel) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               FilledButton.icon(
                 style: FilledButton.styleFrom(
                   backgroundColor: AppTheme.danger,

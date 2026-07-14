@@ -106,6 +106,33 @@ def checkout(db: Session, buyer: User, comment: str | None) -> list[Order]:
     return orders
 
 
+def reorder(db: Session, buyer: User, order: Order) -> int:
+    """Add a past order's items back to the buyer's cart, clamped to availability.
+
+    Returns the number of lines added/merged. Unavailable items are skipped.
+    """
+    from app.models import CartItem
+
+    added = 0
+    for item in order.items:
+        product = db.get(Product, item.product_id)
+        if product is None or not product.is_active or product.stock_qty <= 0:
+            continue
+        qty = max(product.min_order_qty, min(item.quantity, product.stock_qty))
+        existing = db.scalar(
+            select(CartItem).where(
+                CartItem.user_id == buyer.id, CartItem.product_id == product.id
+            )
+        )
+        if existing is not None:
+            existing.quantity = min(product.stock_qty, existing.quantity + qty)
+        else:
+            db.add(CartItem(user_id=buyer.id, product_id=product.id, quantity=qty))
+        added += 1
+    db.commit()
+    return added
+
+
 # Forward-only transition graph. Each edge lists the roles allowed to perform it.
 _TRANSITIONS: dict[tuple[OrderStatus, OrderStatus], set[UserRole]] = {
     (OrderStatus.new, OrderStatus.confirmed): {UserRole.factory},

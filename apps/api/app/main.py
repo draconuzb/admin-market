@@ -11,6 +11,7 @@ from app.routers import (
     cart,
     catalog,
     factory,
+    favorites,
     notifications,
     orders,
     profile,
@@ -39,6 +40,7 @@ app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(catalog.router, prefix=settings.API_V1_PREFIX)
 app.include_router(cart.router, prefix=settings.API_V1_PREFIX)
 app.include_router(orders.router, prefix=settings.API_V1_PREFIX)
+app.include_router(favorites.router, prefix=settings.API_V1_PREFIX)
 app.include_router(factory.router, prefix=settings.API_V1_PREFIX)
 app.include_router(notifications.router, prefix=settings.API_V1_PREFIX)
 app.include_router(profile.router, prefix=settings.API_V1_PREFIX)
