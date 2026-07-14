@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme.dart';
 import '../../../core/theme_controller.dart';
@@ -63,6 +64,28 @@ class ProfileScreen extends ConsumerWidget {
                 ],
               ],
             ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // ── Account section ──
+          IosGroupedSection(
+            children: [
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.person_outline, size: 22, color: AppTheme.accent),
+                title: Text('profile.edit'.tr(), style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
+                onTap: () => context.push('/profile/edit'),
+              ),
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.lock_outline, size: 22, color: AppTheme.accent),
+                title: Text('profile.change_password'.tr(), style: const TextStyle(fontSize: 16)),
+                trailing: const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
+                onTap: () => context.push('/profile/change-password'),
+              ),
+            ],
           ),
 
           const SizedBox(height: 24),

@@ -5,7 +5,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
-from app.routers import admin, auth, cart, catalog, factory, notifications, orders
+from app.routers import (
+    admin,
+    auth,
+    cart,
+    catalog,
+    factory,
+    notifications,
+    orders,
+    profile,
+)
 
 app = FastAPI(
     title="Admin Market API",
@@ -32,6 +41,7 @@ app.include_router(cart.router, prefix=settings.API_V1_PREFIX)
 app.include_router(orders.router, prefix=settings.API_V1_PREFIX)
 app.include_router(factory.router, prefix=settings.API_V1_PREFIX)
 app.include_router(notifications.router, prefix=settings.API_V1_PREFIX)
+app.include_router(profile.router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin.router, prefix=settings.API_V1_PREFIX)
 
 

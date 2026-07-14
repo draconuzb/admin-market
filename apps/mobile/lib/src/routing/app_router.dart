@@ -29,6 +29,8 @@ import '../features/factory/screens/product_form_screen.dart';
 import '../features/notifications/screens/notifications_screen.dart';
 import '../features/orders/screens/order_detail_screen.dart';
 import '../features/orders/screens/orders_screen.dart';
+import '../features/profile/screens/change_password_screen.dart';
+import '../features/profile/screens/profile_edit_screen.dart';
 import '../features/profile/screens/profile_screen.dart';
 import 'buyer_shell.dart';
 
@@ -55,7 +57,11 @@ const _buyerPrefixes = [
 
 bool _allowed(String role, String loc) {
   // Shared across roles.
-  if (loc.startsWith('/notifications')) return true;
+  if (loc.startsWith('/notifications') ||
+      loc.startsWith('/profile/edit') ||
+      loc.startsWith('/profile/change-password')) {
+    return true;
+  }
   return switch (role) {
     'factory' => loc.startsWith('/factory'),
     'admin' => loc.startsWith('/admin'),
@@ -126,6 +132,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         pageBuilder: (_, s) => _slide(s, const NotificationsScreen()),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        pageBuilder: (_, s) => _slide(s, const ProfileEditScreen()),
+      ),
+      GoRoute(
+        path: '/profile/change-password',
+        pageBuilder: (_, s) => _slide(s, const ChangePasswordScreen()),
       ),
       GoRoute(
         path: '/order/:id',

@@ -120,7 +120,14 @@
     "theme_system": "Как в системе",
     "theme_light": "Светлая",
     "theme_dark": "Тёмная",
-    "change_password": "Сменить пароль"
+    "change_password": "Сменить пароль",
+    "edit": "Редактировать профиль",
+    "region": "Регион",
+    "address": "Адрес",
+    "inn": "ИНН",
+    "old_password": "Текущий пароль",
+    "new_password": "Новый пароль",
+    "password_changed": "Пароль изменён"
   },
   "factory": {
     "nav_orders": "Заказы",
@@ -130,6 +137,7 @@
     "products_title": "Мои товары",
     "add_product": "Добавить товар",
     "edit_product": "Редактировать товар",
+    "photos": "Фото",
     "delete_confirm": "Удалить товар?",
     "action_confirm": "Подтвердить",
     "action_ship": "Отправить",

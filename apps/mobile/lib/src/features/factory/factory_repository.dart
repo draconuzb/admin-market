@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 import '../../core/api/dio_client.dart';
 import '../../models/admin.dart';
 import '../../models/catalog.dart';
@@ -26,5 +28,14 @@ class FactoryRepository {
   Future<FactoryStats> stats() async {
     final resp = await _api.get('/factory/stats');
     return FactoryStats.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  /// Uploads a product image (multipart) and returns its public URL.
+  Future<String> uploadImage(int productId, List<int> bytes, String filename) async {
+    final form = FormData.fromMap({
+      'file': MultipartFile.fromBytes(bytes, filename: filename),
+    });
+    final resp = await _api.dio.post('/factory/products/$productId/images', data: form);
+    return resp.data['url'] as String;
   }
 }

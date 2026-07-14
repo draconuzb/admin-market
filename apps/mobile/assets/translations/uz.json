@@ -120,7 +120,14 @@
     "theme_system": "Tizim bo'yicha",
     "theme_light": "Yorug'",
     "theme_dark": "Qorong'i",
-    "change_password": "Parolni o'zgartirish"
+    "change_password": "Parolni o'zgartirish",
+    "edit": "Profilni tahrirlash",
+    "region": "Viloyat",
+    "address": "Manzil",
+    "inn": "STIR (INN)",
+    "old_password": "Joriy parol",
+    "new_password": "Yangi parol",
+    "password_changed": "Parol o'zgartirildi"
   },
   "factory": {
     "nav_orders": "Buyurtmalar",
@@ -130,6 +137,7 @@
     "products_title": "Mahsulotlarim",
     "add_product": "Mahsulot qo'shish",
     "edit_product": "Mahsulotni tahrirlash",
+    "photos": "Rasmlar",
     "delete_confirm": "Mahsulot o'chirilsinmi?",
     "action_confirm": "Tasdiqlash",
     "action_ship": "Jo'natish",

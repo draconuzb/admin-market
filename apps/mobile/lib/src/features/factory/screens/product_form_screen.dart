@@ -2,8 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/api/api_exception.dart';
+import '../../../core/config.dart';
+import '../../../core/theme.dart';
 import '../../../models/catalog.dart';
 import '../../../providers.dart';
 import '../../../shared/widgets/async_views.dart';
@@ -30,6 +33,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   int? _categoryId;
   bool _saving = false;
   bool _initialized = false;
+  bool _uploading = false;
+  List<String> _images = [];
 
   bool get _isEdit => widget.productId != null;
 
@@ -49,8 +54,80 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         _minQty.text = '${p.minOrderQty}';
         _stock.text = '${p.stockQty}';
         _categoryId = p.categoryId;
+        _images = List.of(p.images);
       }
     }
+  }
+
+  Future<void> _addPhoto() async {
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1200,
+      imageQuality: 85,
+    );
+    if (picked == null) return;
+    setState(() => _uploading = true);
+    try {
+      final bytes = await picked.readAsBytes();
+      final url = await ref
+          .read(factoryRepositoryProvider)
+          .uploadImage(widget.productId!, bytes, picked.name);
+      setState(() => _images = [..._images, url]);
+      ref.invalidate(factoryProductsProvider);
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } finally {
+      if (mounted) setState(() => _uploading = false);
+    }
+  }
+
+  Widget _imageSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('factory.photos'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 88,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              for (final url in _images)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(AppConfig.mediaUrl(url),
+                        width: 88, height: 88, fit: BoxFit.cover),
+                  ),
+                ),
+              GestureDetector(
+                onTap: _uploading ? null : _addPhoto,
+                child: Container(
+                  width: 88, height: 88,
+                  decoration: BoxDecoration(
+                    color: AppTheme.fill,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppTheme.separator),
+                  ),
+                  child: _uploading
+                      ? const Center(
+                          child: SizedBox(
+                              width: 22, height: 22,
+                              child: CircularProgressIndicator(strokeWidth: 2)))
+                      : const Icon(Icons.add_a_photo_outlined,
+                          color: AppTheme.accent, size: 28),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
   }
 
   @override
@@ -128,7 +205,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                   ],
                   onChanged: (v) => setState(() => _categoryId = v),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                if (_isEdit) _imageSection(),
                 _text(_nameUz, 'auth.company_name'.tr() + ' (UZ)', required: true),
                 _text(_nameRu, 'RU', required: true),
                 _text(_nameEn, 'EN', required: true),

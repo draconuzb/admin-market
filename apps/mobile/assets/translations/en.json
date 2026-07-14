@@ -120,7 +120,14 @@
     "theme_system": "System",
     "theme_light": "Light",
     "theme_dark": "Dark",
-    "change_password": "Change password"
+    "change_password": "Change password",
+    "edit": "Edit profile",
+    "region": "Region",
+    "address": "Address",
+    "inn": "Tax ID (INN)",
+    "old_password": "Current password",
+    "new_password": "New password",
+    "password_changed": "Password changed"
   },
   "factory": {
     "nav_orders": "Orders",
@@ -130,6 +137,7 @@
     "products_title": "My products",
     "add_product": "Add product",
     "edit_product": "Edit product",
+    "photos": "Photos",
     "delete_confirm": "Delete product?",
     "action_confirm": "Confirm",
     "action_ship": "Ship",
