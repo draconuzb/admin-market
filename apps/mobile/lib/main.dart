@@ -35,11 +35,6 @@ class AdminMarketApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final mode = ref.watch(themeModeProvider);
-    final platform = MediaQuery.platformBrightnessOf(context);
-    // Keep the global brightness flag in sync with the effective theme so the
-    // AppTheme.* getters used across screens resolve to the right palette.
-    AppTheme.isDark = mode == ThemeMode.dark ||
-        (mode == ThemeMode.system && platform == Brightness.dark);
 
     return MaterialApp.router(
       title: 'Admin Market',
@@ -48,7 +43,13 @@ class AdminMarketApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: mode,
       routerConfig: router,
-      builder: (context, child) => MobileFrame(child: child ?? const SizedBox()),
+      builder: (context, child) {
+        // Authoritative: sync the global brightness flag to the theme that
+        // MaterialApp actually applied (below this builder), so AppTheme.*
+        // getters can never disagree with the rendered background.
+        AppTheme.isDark = Theme.of(context).brightness == Brightness.dark;
+        return MobileFrame(child: child ?? const SizedBox());
+      },
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
