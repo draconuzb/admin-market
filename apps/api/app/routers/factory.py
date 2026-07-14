@@ -1,20 +1,23 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.database import get_db
 from app.core.deps import require_roles
-from app.models import Company, Order, Product, ProductImage, User
+from app.models import Company, Order, OrderItem, Product, ProductImage, User
 from app.models.enums import OrderStatus, UserRole
 from app.schemas.catalog import ProductImageOut
 from app.schemas.common import Message
 from app.schemas.factory import (
+    DailyPoint,
+    FactoryAnalyticsOut,
     FactoryProductOut,
     FactoryStatsOut,
     ProductCreateIn,
     ProductUpdateIn,
+    TopProduct,
 )
 
 router = APIRouter(prefix="/factory", tags=["factory"])
@@ -163,4 +166,62 @@ def stats(db: Session = Depends(get_db), user: User = Depends(factory_guard)) ->
         revenue_this_month=revenue,
         commission_this_month=commission,
         pending_orders=pending_orders,
+    )
+
+
+@router.get("/analytics", response_model=FactoryAnalyticsOut)
+def analytics(
+    db: Session = Depends(get_db),
+    user: User = Depends(factory_guard),
+    days: int = Query(default=14, ge=7, le=90),
+) -> FactoryAnalyticsOut:
+    company = _company(db, user)
+    now = datetime.now(timezone.utc)
+    start = (now - timedelta(days=days - 1)).replace(hour=0, minute=0, second=0, microsecond=0)
+
+    not_cancelled = Order.status != OrderStatus.cancelled
+    day = func.date(Order.created_at)
+
+    # Daily orders + revenue (non-cancelled) over the window.
+    rows = db.execute(
+        select(day, func.count(), func.coalesce(func.sum(Order.total_amount), 0))
+        .where(Order.factory_id == company.id, not_cancelled, Order.created_at >= start)
+        .group_by(day)
+    ).all()
+    by_day = {str(r[0]): (int(r[1]), r[2]) for r in rows}
+    daily = []
+    for i in range(days):
+        d = (start + timedelta(days=i)).date().isoformat()
+        orders, revenue = by_day.get(d, (0, 0))
+        daily.append(DailyPoint(date=d, orders=orders, revenue=revenue))
+
+    # Top 5 products by quantity sold (non-cancelled orders).
+    top_rows = db.execute(
+        select(
+            OrderItem.product_name,
+            func.sum(OrderItem.quantity),
+            func.coalesce(func.sum(OrderItem.subtotal), 0),
+        )
+        .join(Order, Order.id == OrderItem.order_id)
+        .where(Order.factory_id == company.id, not_cancelled)
+        .group_by(OrderItem.product_name)
+        .order_by(func.sum(OrderItem.quantity).desc())
+        .limit(5)
+    ).all()
+    top_products = [
+        TopProduct(name=r[0], quantity=int(r[1]), revenue=r[2]) for r in top_rows
+    ]
+
+    # Status breakdown.
+    status_rows = db.execute(
+        select(Order.status, func.count())
+        .where(Order.factory_id == company.id)
+        .group_by(Order.status)
+    ).all()
+    status_counts = {s.value: 0 for s in OrderStatus}
+    for st, cnt in status_rows:
+        status_counts[st.value] = int(cnt)
+
+    return FactoryAnalyticsOut(
+        daily=daily, top_products=top_products, status_counts=status_counts
     )

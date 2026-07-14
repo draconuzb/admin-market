@@ -167,6 +167,8 @@
     "orders_month": "Заказов за месяц",
     "revenue_month": "Доход за месяц",
     "commission_month": "Комиссия за месяц",
+    "revenue_14d": "Доход за 14 дней",
+    "top_products": "Самые продаваемые",
     "pending": "Ожидают",
     "field_category": "Категория",
     "field_price": "Цена",

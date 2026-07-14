@@ -91,6 +91,46 @@ class ReportSummary {
       );
 }
 
+class DailyPoint {
+  DailyPoint({required this.date, required this.orders, required this.revenue});
+  final String date;
+  final int orders;
+  final num revenue;
+
+  factory DailyPoint.fromJson(Map<String, dynamic> j) => DailyPoint(
+        date: j['date'] as String,
+        orders: j['orders'] as int,
+        revenue: parseNum(j['revenue']),
+      );
+}
+
+class TopProduct {
+  TopProduct({required this.name, required this.quantity, required this.revenue});
+  final String name;
+  final int quantity;
+  final num revenue;
+
+  factory TopProduct.fromJson(Map<String, dynamic> j) => TopProduct(
+        name: j['name'] as String,
+        quantity: j['quantity'] as int,
+        revenue: parseNum(j['revenue']),
+      );
+}
+
+class FactoryAnalytics {
+  FactoryAnalytics({required this.daily, required this.topProducts, required this.statusCounts});
+  final List<DailyPoint> daily;
+  final List<TopProduct> topProducts;
+  final Map<String, int> statusCounts;
+
+  factory FactoryAnalytics.fromJson(Map<String, dynamic> j) => FactoryAnalytics(
+        daily: (j['daily'] as List).map((e) => DailyPoint.fromJson(e as Map<String, dynamic>)).toList(),
+        topProducts:
+            (j['top_products'] as List).map((e) => TopProduct.fromJson(e as Map<String, dynamic>)).toList(),
+        statusCounts: (j['status_counts'] as Map).map((k, v) => MapEntry(k.toString(), v as int)),
+      );
+}
+
 class FactoryStats {
   FactoryStats({
     required this.ordersTotal,

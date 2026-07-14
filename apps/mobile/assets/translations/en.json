@@ -167,6 +167,8 @@
     "orders_month": "Orders this month",
     "revenue_month": "Revenue this month",
     "commission_month": "Commission this month",
+    "revenue_14d": "Revenue (last 14 days)",
+    "top_products": "Top selling",
     "pending": "Pending",
     "field_category": "Category",
     "field_price": "Price",

@@ -167,6 +167,8 @@
     "orders_month": "Shu oy buyurtmalar",
     "revenue_month": "Shu oy daromad",
     "commission_month": "Shu oy komissiya",
+    "revenue_14d": "Oxirgi 14 kun daromadi",
+    "top_products": "Eng ko'p sotilganlar",
     "pending": "Kutilayotgan",
     "field_category": "Kategoriya",
     "field_price": "Narx",

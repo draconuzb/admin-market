@@ -122,6 +122,23 @@ def test_stats_counts_incoming_orders(client, marketplace):
     assert float(stats["revenue_this_month"]) == 0.0  # not delivered yet
 
 
+def test_analytics_shape_and_top_products(client, marketplace):
+    # Buyer orders sugar from f1.
+    buyer_h = auth_headers(client, marketplace["buyer"].phone)
+    client.post("/api/v1/cart/items",
+                json={"product_id": marketplace["sugar"].id, "quantity": 5}, headers=buyer_h)
+    client.post("/api/v1/orders/checkout", json={}, headers=buyer_h)
+
+    h = auth_headers(client, marketplace["f1"].phone)
+    a = client.get("/api/v1/factory/analytics", headers=h).json()
+    assert len(a["daily"]) == 14
+    assert a["daily"][-1]["orders"] == 1  # today
+    assert float(a["daily"][-1]["revenue"]) == 500000.0
+    assert a["top_products"][0]["name"] == "Shakar"
+    assert a["top_products"][0]["quantity"] == 5
+    assert a["status_counts"]["new"] == 1
+
+
 def test_stats_revenue_after_delivery(client, marketplace):
     buyer_h = auth_headers(client, marketplace["buyer"].phone)
     client.post(

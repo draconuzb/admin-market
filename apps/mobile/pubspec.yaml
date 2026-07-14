@@ -22,6 +22,7 @@ dependencies:
   google_fonts: ^6.2.1
   shimmer: ^3.0.0
   image_picker: ^1.1.2
+  fl_chart: ^0.69.2
 
 dev_dependencies:
   flutter_test:

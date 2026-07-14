@@ -30,6 +30,11 @@ class FactoryRepository {
     return FactoryStats.fromJson(resp.data as Map<String, dynamic>);
   }
 
+  Future<FactoryAnalytics> analytics() async {
+    final resp = await _api.get('/factory/analytics');
+    return FactoryAnalytics.fromJson(resp.data as Map<String, dynamic>);
+  }
+
   /// Uploads a product image (multipart) and returns its public URL.
   Future<String> uploadImage(int productId, List<int> bytes, String filename) async {
     final form = FormData.fromMap({

@@ -11,3 +11,7 @@ final factoryProductsProvider = FutureProvider<List<Product>>((ref) {
 final factoryStatsProvider = FutureProvider<FactoryStats>((ref) {
   return ref.watch(factoryRepositoryProvider).stats();
 });
+
+final factoryAnalyticsProvider = FutureProvider<FactoryAnalytics>((ref) {
+  return ref.watch(factoryRepositoryProvider).analytics();
+});

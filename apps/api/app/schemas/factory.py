@@ -59,3 +59,22 @@ class FactoryStatsOut(BaseModel):
     revenue_this_month: Decimal  # realized: delivered orders this month
     commission_this_month: Decimal
     pending_orders: int          # status = new (awaiting factory action)
+
+
+class DailyPoint(BaseModel):
+    date: str          # YYYY-MM-DD
+    orders: int
+    revenue: Decimal
+
+
+class TopProduct(BaseModel):
+    name: str
+    quantity: int
+    revenue: Decimal
+
+
+class FactoryAnalyticsOut(BaseModel):
+    daily: list[DailyPoint]                 # last N days (chronological)
+    top_products: list[TopProduct]          # top 5 by quantity
+    status_counts: dict[str, int]           # orders per status
+
