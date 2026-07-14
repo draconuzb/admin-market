@@ -53,6 +53,11 @@
     "orders": "Buyurtmalar",
     "profile": "Profil"
   },
+  "notifications": {
+    "title": "Bildirishnomalar",
+    "read_all": "Hammasini o'qildi",
+    "empty": "Bildirishnomalar yo'q"
+  },
   "home": {
     "categories": "Kategoriyalar",
     "featured": "Tavsiya etilgan",

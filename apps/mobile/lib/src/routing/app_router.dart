@@ -26,6 +26,7 @@ import '../features/factory/screens/factory_products_screen.dart';
 import '../features/factory/screens/factory_shell.dart';
 import '../features/factory/screens/factory_stats_screen.dart';
 import '../features/factory/screens/product_form_screen.dart';
+import '../features/notifications/screens/notifications_screen.dart';
 import '../features/orders/screens/order_detail_screen.dart';
 import '../features/orders/screens/orders_screen.dart';
 import '../features/profile/screens/profile_screen.dart';
@@ -52,11 +53,15 @@ const _buyerPrefixes = [
   '/checkout', '/profile',
 ];
 
-bool _allowed(String role, String loc) => switch (role) {
-      'factory' => loc.startsWith('/factory'),
-      'admin' => loc.startsWith('/admin'),
-      _ => _buyerPrefixes.any((p) => loc == p || loc.startsWith('$p/') || loc.startsWith('$p?')),
-    };
+bool _allowed(String role, String loc) {
+  // Shared across roles.
+  if (loc.startsWith('/notifications')) return true;
+  return switch (role) {
+    'factory' => loc.startsWith('/factory'),
+    'admin' => loc.startsWith('/admin'),
+    _ => _buyerPrefixes.any((p) => loc == p || loc.startsWith('$p/') || loc.startsWith('$p?')),
+  };
+}
 
 /// iOS-style slide transition for pushed routes.
 CupertinoPage<void> _slide(GoRouterState state, Widget child) =>
@@ -117,6 +122,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/checkout',
         pageBuilder: (_, s) => _slide(s, const CheckoutScreen()),
+      ),
+      GoRoute(
+        path: '/notifications',
+        pageBuilder: (_, s) => _slide(s, const NotificationsScreen()),
       ),
       GoRoute(
         path: '/order/:id',

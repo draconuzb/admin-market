@@ -53,6 +53,11 @@
     "orders": "Заказы",
     "profile": "Профиль"
   },
+  "notifications": {
+    "title": "Уведомления",
+    "read_all": "Прочитать все",
+    "empty": "Нет уведомлений"
+  },
   "home": {
     "categories": "Категории",
     "featured": "Рекомендуемые",

@@ -8,6 +8,7 @@ import '../../../core/theme.dart';
 import '../../../shared/widgets/async_views.dart';
 import '../../../shared/widgets/install_banner.dart';
 import '../../../shared/widgets/product_card.dart';
+import '../../notifications/widgets/notification_bell.dart';
 import '../catalog_providers.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -87,6 +88,7 @@ class HomeScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
+                        const NotificationBell(color: Colors.white),
                       ],
                     ),
                     const SizedBox(height: 20),

@@ -93,6 +93,16 @@ def checkout(db: Session, buyer: User, comment: str | None) -> list[Order]:
     db.commit()
     for order in orders:
         db.refresh(order)
+
+    # Notify each factory of its new incoming order.
+    from app.models import Company
+    from app.services.notifications import notify_new_order
+
+    for order in orders:
+        company = db.get(Company, order.factory_id)
+        if company is not None:
+            notify_new_order(db, company.user_id, order.id)
+    db.commit()
     return orders
 
 
@@ -131,6 +141,18 @@ def change_status(db: Session, order: Order, new_status: OrderStatus, actor: Use
 
     order.status = new_status
     order.updated_at = utcnow()
+
+    # Notify the counterparty of the change.
+    from app.models import Company
+    from app.services.notifications import notify_order_status
+
+    if actor.role == UserRole.factory:
+        notify_order_status(db, order.buyer_id, order.id, new_status)
+    elif new_status == OrderStatus.cancelled:
+        company = db.get(Company, order.factory_id)
+        if company is not None:
+            notify_order_status(db, company.user_id, order.id, new_status)
+
     db.commit()
     db.refresh(order)
     return order

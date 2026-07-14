@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/format.dart';
 import '../../../shared/widgets/async_views.dart';
 import '../../../shared/widgets/status_badge.dart';
+import '../../notifications/widgets/notification_bell.dart';
 import '../../orders/orders_providers.dart';
 
 /// Factory's incoming orders (the role-aware /orders endpoint returns these).
@@ -16,7 +17,15 @@ class FactoryOrdersScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(ordersListProvider);
     return Scaffold(
-      appBar: AppBar(title: Text('factory.orders_title'.tr())),
+      appBar: AppBar(
+        title: Text('factory.orders_title'.tr()),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: NotificationBell(),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(ordersListProvider),
         child: async.when(

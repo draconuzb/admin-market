@@ -80,6 +80,9 @@ def act_on_registration(
     if payload.action == "approve":
         user.status = UserStatus.active
         msg = "Registration approved"
+        from app.services.notifications import notify_approved
+
+        notify_approved(db, user.id)
     else:
         user.status = UserStatus.blocked
         msg = "Registration rejected"

@@ -53,6 +53,11 @@
     "orders": "Orders",
     "profile": "Profile"
   },
+  "notifications": {
+    "title": "Notifications",
+    "read_all": "Mark all read",
+    "empty": "No notifications"
+  },
   "home": {
     "categories": "Categories",
     "featured": "Featured",
