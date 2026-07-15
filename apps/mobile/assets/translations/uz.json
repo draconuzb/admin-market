@@ -200,5 +200,10 @@
     "gmv": "Umumiy savdo (GMV)",
     "commission_total": "Jami komissiya",
     "no_company": "—"
+  },
+  "push": {
+    "title": "Push bildirishnomalar",
+    "enabled": "Push yoqildi",
+    "denied": "Ruxsat berilmadi"
   }
 }

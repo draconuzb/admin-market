@@ -14,6 +14,9 @@ env/
 # Env / secrets
 .env
 *.pem
+# VAPID private key material (public key lives in config.py; private stays out of git)
+apps/api/_vapid.json
+apps/api/_vapid_b64.txt
 
 # Media uploads
 apps/api/media/

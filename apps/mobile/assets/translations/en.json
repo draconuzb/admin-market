@@ -200,5 +200,10 @@
     "gmv": "GMV",
     "commission_total": "Total commission",
     "no_company": "—"
+  },
+  "push": {
+    "title": "Push notifications",
+    "enabled": "Push enabled",
+    "denied": "Permission denied"
   }
 }

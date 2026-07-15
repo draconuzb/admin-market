@@ -13,6 +13,17 @@
 		reverse_proxy api:8000
 	}
 
+	# Web Push service worker: serve as a real static file with NO SPA fallback,
+	# so a missing/renamed file returns 404 instead of index.html (an HTML body
+	# under a .js URL is what a CDN caches and then breaks SW registration).
+	# no-store keeps Cloudflare from caching the worker at all.
+	@psw path /psw/*
+	handle @psw {
+		root * /srv/web
+		header Cache-Control "no-store"
+		file_server
+	}
+
 	# Everything else is the Flutter web SPA (client-side routing fallback).
 	handle {
 		root * /srv/web

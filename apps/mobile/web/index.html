@@ -70,6 +70,43 @@
       window._amInstall.prompt = null;
       window._amInstall.available = false;
     };
+
+    // ── Web Push ──
+    function _urlB64ToUint8(base64String) {
+      var padding = '='.repeat((4 - base64String.length % 4) % 4);
+      var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      var raw = atob(base64);
+      var arr = new Uint8Array(raw.length);
+      for (var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      return arr;
+    }
+    window._push = {
+      supported: function () {
+        return ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window);
+      },
+      // Request permission, register the dedicated SW, subscribe, return JSON.
+      subscribe: async function (vapidKey) {
+        if (!this.supported()) return null;
+        var perm = await Notification.requestPermission();
+        if (perm !== 'granted') return null;
+        var reg = await navigator.serviceWorker.register('/psw/push-sw.js?v=2', { scope: '/psw/' });
+        if (!reg.active) {
+          await new Promise(function (resolve) {
+            var sw = reg.installing || reg.waiting;
+            if (!sw) return resolve();
+            sw.addEventListener('statechange', function () {
+              if (sw.state === 'activated') resolve();
+            });
+          });
+        }
+        var existing = await reg.pushManager.getSubscription();
+        var sub = existing || await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: _urlB64ToUint8(vapidKey),
+        });
+        return JSON.stringify(sub);
+      },
+    };
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>

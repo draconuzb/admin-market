@@ -200,5 +200,10 @@
     "gmv": "Оборот (GMV)",
     "commission_total": "Всего комиссии",
     "no_company": "—"
+  },
+  "push": {
+    "title": "Push-уведомления",
+    "enabled": "Push включён",
+    "denied": "Доступ не разрешён"
   }
 }

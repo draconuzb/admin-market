@@ -24,3 +24,32 @@ void pwaTriggerInstall() {
     _amInstallTrigger();
   } catch (_) {}
 }
+
+// ── Web Push (bridges window._push in index.html) ──
+@JS('_push')
+external _Push? get _push;
+
+extension type _Push(JSObject _) implements JSObject {
+  external JSBoolean supported();
+  external JSPromise<JSString?> subscribe(JSString vapidKey);
+}
+
+bool pushSupported() {
+  try {
+    return _push?.supported().toDart ?? false;
+  } catch (_) {
+    return false;
+  }
+}
+
+/// Requests permission + subscribes; returns the subscription JSON, or null.
+Future<String?> pushSubscribe(String vapidKey) async {
+  final p = _push;
+  if (p == null) return null;
+  try {
+    final res = await p.subscribe(vapidKey.toJS).toDart;
+    return res?.toDart;
+  } catch (_) {
+    return null;
+  }
+}

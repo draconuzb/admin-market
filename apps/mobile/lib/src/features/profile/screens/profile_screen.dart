@@ -7,6 +7,7 @@ import '../../../core/theme.dart';
 import '../../../core/theme_controller.dart';
 import '../../../providers.dart';
 import '../../auth/auth_controller.dart';
+import '../../push/push_service.dart';
 
 /// iOS Settings-style profile screen.
 class ProfileScreen extends ConsumerWidget {
@@ -71,6 +72,7 @@ class ProfileScreen extends ConsumerWidget {
           // ── Account section ──
           IosGroupedSection(
             children: [
+              if (ref.read(pushServiceProvider).supported) const _PushTile(),
               if (user != null && user.isBuyer)
                 ListTile(
                   dense: true,
@@ -140,6 +142,52 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 40),
         ],
       ),
+    );
+  }
+}
+
+class _PushTile extends ConsumerStatefulWidget {
+  const _PushTile();
+  @override
+  ConsumerState<_PushTile> createState() => _PushTileState();
+}
+
+class _PushTileState extends ConsumerState<_PushTile> {
+  bool _busy = false;
+  bool _enabled = false;
+
+  Future<void> _enable() async {
+    setState(() => _busy = true);
+    try {
+      final ok = await ref.read(pushServiceProvider).enable();
+      if (mounted) {
+        setState(() => _enabled = ok);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(ok ? 'push.enabled'.tr() : 'push.denied'.tr()),
+        ));
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('common.error_generic'.tr())));
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      dense: true,
+      leading: const Icon(Icons.notifications_active_outlined, size: 22, color: AppTheme.accent),
+      title: Text('push.title'.tr(), style: const TextStyle(fontSize: 16)),
+      trailing: _busy
+          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+          : _enabled
+              ? const Icon(Icons.check, color: AppTheme.success, size: 20)
+              : const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
+      onTap: _busy || _enabled ? null : _enable,
     );
   }
 }

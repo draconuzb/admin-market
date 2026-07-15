@@ -44,6 +44,27 @@ class Settings(BaseSettings):
     MEDIA_ROOT: str = "media"
     MEDIA_URL: str = "/media"
 
+    # Web Push (VAPID). Public key is safe to expose; private key is env-only.
+    # Push is disabled when VAPID_PRIVATE_KEY is empty.
+    VAPID_PUBLIC_KEY: str = (
+        "BOseoNu8eHRpM0HsJhZ-XLbGhWuZHaCn9cwuwAOqUc-sW0Q3QRo4WF3hMuaqtul5hASzZ0dbBS8dbgxxw7ikLG0"
+    )
+    # Base64-encoded PEM (single line, safe for .env). Empty = push disabled.
+    VAPID_PRIVATE_KEY: str = ""
+    VAPID_SUBJECT: str = "mailto:admin@bizdaoson.uz"
+
+    @property
+    def vapid_private_pem(self) -> str:
+        if not self.VAPID_PRIVATE_KEY:
+            return ""
+        import base64
+
+        try:
+            return base64.b64decode(self.VAPID_PRIVATE_KEY).decode()
+        except Exception:
+            # Already a raw PEM (not base64) — use as-is.
+            return self.VAPID_PRIVATE_KEY
+
     # Default commission % seeded into settings table.
     DEFAULT_COMMISSION_PERCENT: float = 5.0
 

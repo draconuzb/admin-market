@@ -23,8 +23,14 @@ _STATUS_UZ = {
 
 
 def notify(db: Session, user_id: int, type_: str, title: str, body: str | None = None) -> None:
-    """Add a notification for a user (not committed — caller commits)."""
+    """Add an in-app notification and fire a web push (both best-effort)."""
     db.add(Notification(user_id=user_id, type=type_, title=title, body=body))
+    from app.services.push import send_push_to_user
+
+    try:
+        send_push_to_user(db, user_id, title, body or title)
+    except Exception:  # push must never break the domain flow
+        pass
 
 
 def notify_order_status(db: Session, buyer_id: int, order_id: int, status: OrderStatus) -> None:
