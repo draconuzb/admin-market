@@ -24,6 +24,16 @@
 		file_server
 	}
 
+	# App shell (mutable, NOT content-hashed by Flutter). Force revalidation so a
+	# new build is picked up immediately instead of a CDN serving a stale bundle
+	# (a stale main.dart.js with the wrong API base = "Cannot reach server").
+	@appshell path / /index.html /flutter_bootstrap.js /flutter_service_worker.js /main.dart.js /flutter.js /manifest.json /version.json
+	handle @appshell {
+		root * /srv/web
+		header Cache-Control "no-cache"
+		file_server
+	}
+
 	# Everything else is the Flutter web SPA (client-side routing fallback).
 	handle {
 		root * /srv/web
