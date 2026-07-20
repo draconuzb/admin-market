@@ -18,6 +18,11 @@ env/
 apps/api/_vapid.json
 apps/api/_vapid_b64.txt
 
+# Android release signing — the keystore and its passwords never belong in git
+apps/mobile/android/key.properties
+*.jks
+*.keystore
+
 # Media uploads
 apps/api/media/
 media/

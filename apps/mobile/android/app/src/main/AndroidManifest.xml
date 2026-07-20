@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The app talks to the Admin Market API over HTTPS; required in release builds
+         too (the Flutter template only declares it for debug/profile). -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:label="admin_market"
+        android:label="Admin Market"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
