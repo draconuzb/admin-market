@@ -38,6 +38,15 @@ class Factory {
       );
 }
 
+class ProductImage {
+  ProductImage({required this.id, required this.url});
+  final int id;
+  final String url;
+
+  factory ProductImage.fromJson(Map<String, dynamic> j) =>
+      ProductImage(id: j['id'] as int, url: j['url'] as String);
+}
+
 class Product {
   Product({
     required this.id,
@@ -51,12 +60,14 @@ class Product {
     num? salePrice,
     required this.minOrderQty,
     required this.stockQty,
+    this.lowStockThreshold = 0,
     required this.isFeatured,
     this.isActive = true,
     this.descriptionUz,
     this.descriptionRu,
     this.descriptionEn,
     this.images = const [],
+    this.imageList = const [],
     this.factory,
     this.ratingAvg = 0,
     this.ratingCount = 0,
@@ -73,15 +84,18 @@ class Product {
   final num? _salePrice;
   final int minOrderQty;
   final int stockQty;
+  final int lowStockThreshold;
   final bool isFeatured;
 
   bool get hasDiscount => discountPercent > 0;
+  bool get isLowStock => lowStockThreshold > 0 && stockQty <= lowStockThreshold;
   num get salePrice => _salePrice ?? price;
   final bool isActive;
   final String? descriptionUz;
   final String? descriptionRu;
   final String? descriptionEn;
   final List<String> images;
+  final List<ProductImage> imageList; // id + url, for factory image management
   final Factory? factory;
   final num ratingAvg;
   final int ratingCount;
@@ -112,12 +126,17 @@ class Product {
         salePrice: j['sale_price'] != null ? parseNum(j['sale_price']) : null,
         minOrderQty: j['min_order_qty'] as int,
         stockQty: j['stock_qty'] as int,
+        lowStockThreshold: j['low_stock_threshold'] as int? ?? 0,
         isFeatured: j['is_featured'] as bool? ?? false,
         isActive: j['is_active'] as bool? ?? true,
         descriptionUz: j['description_uz'] as String?,
         descriptionRu: j['description_ru'] as String?,
         descriptionEn: j['description_en'] as String?,
         images: (j['images'] as List?)?.map((e) => e['url'] as String).toList() ?? const [],
+        imageList: (j['images'] as List?)
+                ?.map((e) => ProductImage.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
         factory: j['factory'] != null
             ? Factory.fromJson(j['factory'] as Map<String, dynamic>)
             : null,

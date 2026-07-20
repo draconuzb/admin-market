@@ -6,8 +6,11 @@ class OrdersRepository {
   OrdersRepository(this._api);
   final ApiClient _api;
 
-  Future<List<Order>> checkout({String? comment}) async {
-    final resp = await _api.post('/orders/checkout', data: {'comment': comment});
+  Future<List<Order>> checkout({String? comment, int? addressId}) async {
+    final resp = await _api.post('/orders/checkout', data: {
+      'comment': comment,
+      if (addressId != null) 'address_id': addressId,
+    });
     return (resp.data['orders'] as List)
         .map((e) => Order.fromJson(e as Map<String, dynamic>))
         .toList();

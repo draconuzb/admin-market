@@ -27,6 +27,10 @@ class Order(Base, TimestampMixin):
     commission_percent: Mapped[float] = mapped_column(Numeric(6, 2), default=0)
     commission_amount: Mapped[float] = mapped_column(Numeric(16, 2), default=0)
     comment: Mapped[str | None] = mapped_column(Text, default=None)
+    # Delivery address snapshotted at checkout (immutable — later address edits don't change past orders).
+    shipping_name: Mapped[str | None] = mapped_column(String(160), default=None)
+    shipping_phone: Mapped[str | None] = mapped_column(String(20), default=None)
+    shipping_address: Mapped[str | None] = mapped_column(Text, default=None)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), default=utcnow, onupdate=utcnow
     )
@@ -35,6 +39,11 @@ class Order(Base, TimestampMixin):
     factory: Mapped["Company"] = relationship()
     items: Mapped[list["OrderItem"]] = relationship(
         back_populates="order", cascade="all, delete-orphan"
+    )
+    events: Mapped[list["OrderEvent"]] = relationship(
+        back_populates="order",
+        cascade="all, delete-orphan",
+        order_by="OrderEvent.id",
     )
 
 
@@ -51,3 +60,17 @@ class OrderItem(Base):
     subtotal: Mapped[float] = mapped_column(Numeric(16, 2))
 
     order: Mapped["Order"] = relationship(back_populates="items")
+
+
+class OrderEvent(Base, TimestampMixin):
+    """Immutable audit trail of an order's status changes — powers the timeline UI."""
+
+    __tablename__ = "order_events"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"), index=True)
+    status: Mapped[str] = mapped_column(String(20))
+    # Who triggered it: 'buyer' | 'factory' | 'system' — enough for the UI, no FK needed.
+    actor_role: Mapped[str | None] = mapped_column(String(20), default=None)
+
+    order: Mapped["Order"] = relationship(back_populates="events")

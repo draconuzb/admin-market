@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.database import get_db
 from app.core.deps import require_roles
-from app.models import Order, Product, Setting, User
+from app.models import Company, Order, Product, Setting, User
 from app.models.enums import OrderStatus, UserRole, UserStatus
 from app.schemas.admin import (
     AdminProductOut,
@@ -220,6 +220,50 @@ def report_summary(
         orders_count=orders_count,
         gmv=gmv,
         commission_total=commission,
+    )
+
+
+@router.get("/orders/export")
+def export_orders(
+    fmt: str = Query(default="xlsx", alias="format"),
+    db: Session = Depends(get_db),
+    _: User = Depends(admin_guard),
+) -> Response:
+    """Export every order across the marketplace for accounting/analysis."""
+    from app.services.exports import MEDIA_TYPES, write_table
+
+    if fmt not in MEDIA_TYPES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "bad_format", "message": "format must be csv or xlsx"},
+        )
+    orders = list(
+        db.scalars(
+            select(Order).options(selectinload(Order.items)).order_by(Order.id.desc())
+        )
+    )
+    factories = {c.id: c.name for c in db.scalars(select(Company))}
+    headers = ["ID", "Sana", "Holat", "Zavod", "Xaridor", "Telefon",
+               "Pozitsiyalar", "Jami summa", "Komissiya"]
+    rows = [
+        [
+            o.id,
+            o.created_at.strftime("%Y-%m-%d %H:%M"),
+            o.status.value,
+            factories.get(o.factory_id, ""),
+            o.shipping_name or "",
+            o.shipping_phone or "",
+            sum(it.quantity for it in o.items),
+            float(o.total_amount),
+            float(o.commission_amount),
+        ]
+        for o in orders
+    ]
+    data = write_table(headers, rows, fmt, "Buyurtmalar")
+    return Response(
+        content=data,
+        media_type=MEDIA_TYPES[fmt],
+        headers={"Content-Disposition": f'attachment; filename="barcha-buyurtmalar.{fmt}"'},
     )
 
 

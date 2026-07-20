@@ -6,8 +6,11 @@ import 'package:go_router/go_router.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/format.dart';
 import '../../../core/theme.dart';
+import '../../../models/address.dart';
 import '../../../providers.dart';
 import '../../../shared/widgets/async_views.dart';
+import '../../addresses/addresses_providers.dart';
+import '../../addresses/screens/addresses_screen.dart';
 import '../../orders/orders_providers.dart';
 import '../cart_controller.dart';
 
@@ -20,6 +23,7 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   final _comment = TextEditingController();
   bool _placing = false;
+  Address? _selectedAddress;
 
   @override
   void dispose() {
@@ -30,7 +34,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   Future<void> _placeOrder() async {
     setState(() => _placing = true);
     try {
-      await ref.read(ordersRepositoryProvider).checkout(comment: _comment.text.trim());
+      await ref.read(ordersRepositoryProvider).checkout(
+            comment: _comment.text.trim(),
+            addressId: _selectedAddress?.id,
+          );
       await ref.read(cartControllerProvider.notifier).clearLocal();
       ref.invalidate(ordersListProvider);
       if (mounted) {
@@ -45,6 +52,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     } finally {
       if (mounted) setState(() => _placing = false);
     }
+  }
+
+  /// The explicitly-picked address, else the saved default, else none.
+  Address? _resolveAddress() {
+    if (_selectedAddress != null) return _selectedAddress;
+    final list = ref.watch(addressesProvider).valueOrNull;
+    if (list == null || list.isEmpty) return null;
+    return list.firstWhere((a) => a.isDefault, orElse: () => list.first);
   }
 
   @override
@@ -86,6 +101,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ),
                     const SizedBox(height: 16),
                   ],
+
+                  // Delivery address
+                  _AddressPicker(
+                    selected: _resolveAddress(),
+                    onPick: (a) => setState(() => _selectedAddress = a),
+                  ),
+                  const SizedBox(height: 16),
 
                   // Items
                   Container(
@@ -196,6 +218,60 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AddressPicker extends StatelessWidget {
+  const _AddressPicker({required this.selected, required this.onPick});
+  final Address? selected;
+  final void Function(Address) onPick;
+
+  Future<void> _pick(BuildContext context) async {
+    final picked = await Navigator.of(context).push<Address>(
+      MaterialPageRoute(builder: (_) => const AddressesScreen(pickMode: true)),
+    );
+    if (picked != null) onPick(picked);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final a = selected;
+    return Material(
+      color: AppTheme.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: () => _pick(context),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(a == null ? Icons.add_location_alt_outlined : Icons.location_on,
+                  color: AppTheme.accent, size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: a == null
+                    ? Text('address.select'.tr(),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${a.label} · ${a.fullName}',
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 2),
+                          Text(a.oneLine,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                        ],
+                      ),
+              ),
+              const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
+            ],
+          ),
         ),
       ),
     );

@@ -10,7 +10,11 @@
     "confirm": "Tasdiqlash",
     "search": "Qidirish",
     "currency": "so'm",
-    "logout": "Chiqish"
+    "logout": "Chiqish",
+    "required": "Majburiy maydon",
+    "ok": "OK",
+    "edit": "Tahrirlash",
+    "delete": "O'chirish"
   },
   "language": {
     "title": "Tilni tanlang",
@@ -122,6 +126,8 @@
     "cancel_order": "Buyurtmani bekor qilish",
     "reorder": "Qayta buyurtma qilish",
     "reordered": "Mahsulotlar savatga qo'shildi",
+    "timeline": "Buyurtma tarixi",
+    "download_invoice": "Hisob-fakturani yuklab olish",
     "status": {
       "new": "Yangi",
       "confirmed": "Tasdiqlangan",
@@ -176,7 +182,38 @@
     "field_min_qty": "Minimal buyurtma",
     "field_stock": "Zaxira",
     "field_active": "Faol",
-    "field_discount": "Chegirma (%)"
+    "field_discount": "Chegirma (%)",
+    "field_low_stock": "Kam qoldiq chegarasi (0 = o'chiq)",
+    "low_stock": "Kam qoldi",
+    "export_products": "Mahsulotlarni eksport (Excel)",
+    "export_orders": "Buyurtmalarni eksport (Excel)",
+    "import_products": "Excel'dan import",
+    "import_template": "Namuna shablon",
+    "import_result": "Import natijasi",
+    "import_created": "Qo'shildi: {}",
+    "import_updated": "Yangilandi: {}",
+    "import_errors": "Xatolar: {}",
+    "import_row": "Qator"
+  },
+  "address": {
+    "title": "Manzillarim",
+    "add": "Manzil qo'shish",
+    "edit": "Manzilni tahrirlash",
+    "empty": "Saqlangan manzillar yo'q",
+    "default": "Asosiy",
+    "make_default": "Asosiy qilish",
+    "set_default": "Asosiy manzil sifatida belgilash",
+    "delete_confirm": "Manzil o'chirilsinmi?",
+    "select": "Yetkazib berish manzilini tanlang",
+    "delivery": "Yetkazib berish manzili",
+    "label": "Nomi",
+    "label_hint": "Ombor, Do'kon...",
+    "full_name": "Qabul qiluvchi",
+    "phone": "Telefon",
+    "region": "Viloyat",
+    "district": "Tuman",
+    "street": "Ko'cha, uy",
+    "landmark": "Mo'ljal"
   },
   "admin": {
     "nav_registrations": "Ro'yxatlar",
@@ -199,6 +236,7 @@
     "orders_count": "Buyurtmalar soni",
     "gmv": "Umumiy savdo (GMV)",
     "commission_total": "Jami komissiya",
+    "export_orders": "Buyurtmalarni eksport",
     "no_company": "—"
   },
   "push": {

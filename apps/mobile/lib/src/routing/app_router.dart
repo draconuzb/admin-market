@@ -9,6 +9,7 @@ import '../features/admin/screens/admin_reports_screen.dart';
 import '../features/admin/screens/admin_settings_screen.dart';
 import '../features/admin/screens/admin_shell.dart';
 import '../features/admin/screens/admin_users_screen.dart';
+import '../features/addresses/screens/addresses_screen.dart';
 import '../features/auth/auth_controller.dart';
 import '../features/auth/screens/language_screen.dart';
 import '../features/auth/screens/login_screen.dart';
@@ -53,7 +54,7 @@ String _roleHome(String? role) => switch (role) {
 /// Route prefixes each role is allowed to view.
 const _buyerPrefixes = [
   '/home', '/catalog', '/cart', '/orders', '/order', '/products', '/product',
-  '/checkout', '/profile', '/favorites',
+  '/checkout', '/profile', '/favorites', '/addresses',
 ];
 
 bool _allowed(String role, String loc) {
@@ -137,6 +138,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/favorites',
         pageBuilder: (_, s) => _slide(s, const FavoritesScreen()),
+      ),
+      GoRoute(
+        path: '/addresses',
+        pageBuilder: (_, s) => _slide(s, const AddressesScreen()),
       ),
       GoRoute(
         path: '/profile/edit',

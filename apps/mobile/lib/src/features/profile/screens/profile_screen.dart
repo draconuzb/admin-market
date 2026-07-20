@@ -81,6 +81,14 @@ class ProfileScreen extends ConsumerWidget {
                   trailing: const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
                   onTap: () => context.push('/favorites'),
                 ),
+              if (user != null && user.isBuyer)
+                ListTile(
+                  dense: true,
+                  leading: const Icon(Icons.location_on_outlined, size: 22, color: AppTheme.accent),
+                  title: Text('address.title'.tr(), style: const TextStyle(fontSize: 16)),
+                  trailing: const Icon(Icons.chevron_right, color: AppTheme.textTertiary),
+                  onTap: () => context.push('/addresses'),
+                ),
               ListTile(
                 dense: true,
                 leading: const Icon(Icons.person_outline, size: 22, color: AppTheme.accent),

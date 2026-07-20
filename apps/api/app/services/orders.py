@@ -8,7 +8,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import CartItem, Order, OrderItem, Product, Setting, User
+from app.models import Address, CartItem, Order, OrderEvent, OrderItem, Product, Setting, User
 from app.models.base import utcnow
 from app.models.enums import OrderStatus, UserRole
 
@@ -22,11 +22,14 @@ def _http(code: str, message: str, status_code: int = status.HTTP_400_BAD_REQUES
     return HTTPException(status_code=status_code, detail={"code": code, "message": message})
 
 
-def checkout(db: Session, buyer: User, comment: str | None) -> list[Order]:
+def checkout(
+    db: Session, buyer: User, comment: str | None, address_id: int | None = None
+) -> list[Order]:
     """Turn the buyer's cart into one order per factory, snapshotting prices.
 
     Validates min-order-qty and stock availability. Stock is NOT decremented here —
-    it decrements when the factory confirms the order.
+    it decrements when the factory confirms the order. If a saved address is given,
+    its details are snapshotted onto every resulting order.
     """
     cart_items = list(
         db.scalars(
@@ -35,6 +38,13 @@ def checkout(db: Session, buyer: User, comment: str | None) -> list[Order]:
     )
     if not cart_items:
         raise _http("cart_empty", "Cart is empty")
+
+    # Resolve the delivery address (must belong to the buyer) and snapshot it.
+    address: Address | None = None
+    if address_id is not None:
+        address = db.get(Address, address_id)
+        if address is None or address.user_id != buyer.id:
+            raise _http("address_not_found", "Delivery address not found", status.HTTP_404_NOT_FOUND)
 
     commission_percent = get_commission_percent(db)
 
@@ -64,7 +74,11 @@ def checkout(db: Session, buyer: User, comment: str | None) -> list[Order]:
             status=OrderStatus.new,
             commission_percent=commission_percent,
             comment=comment,
+            shipping_name=address.full_name if address else None,
+            shipping_phone=address.phone if address else None,
+            shipping_address=address.formatted() if address else None,
         )
+        order.events.append(OrderEvent(status=OrderStatus.new.value, actor_role="buyer"))
         total = Decimal("0")
         for ci, product in lines:
             unit_price = product.sale_price  # honors any active discount
@@ -161,17 +175,20 @@ def change_status(db: Session, order: Order, new_status: OrderStatus, actor: Use
         raise _http("forbidden", "Not your order", status.HTTP_403_FORBIDDEN)
 
     # Stock decrements on confirm; restores if a confirmed order is cancelled.
+    low_stock: list[Product] = []
     if new_status == OrderStatus.confirmed:
-        _apply_stock(db, order, sign=-1)
+        low_stock = _apply_stock(db, order, sign=-1)
     elif new_status == OrderStatus.cancelled and order.status == OrderStatus.confirmed:
         _apply_stock(db, order, sign=+1)
 
     order.status = new_status
     order.updated_at = utcnow()
+    actor_role = "factory" if actor.role == UserRole.factory else "buyer"
+    order.events.append(OrderEvent(status=new_status.value, actor_role=actor_role))
 
     # Notify the counterparty of the change.
     from app.models import Company
-    from app.services.notifications import notify_order_status
+    from app.services.notifications import notify_low_stock, notify_order_status
 
     if actor.role == UserRole.factory:
         notify_order_status(db, order.buyer_id, order.id, new_status)
@@ -180,12 +197,21 @@ def change_status(db: Session, order: Order, new_status: OrderStatus, actor: Use
         if company is not None:
             notify_order_status(db, company.user_id, order.id, new_status)
 
+    # Warn the factory about products that just dropped to/below their alert level.
+    if low_stock:
+        company = db.get(Company, order.factory_id)
+        if company is not None:
+            for product in low_stock:
+                notify_low_stock(db, company.user_id, product.name_uz, product.stock_qty)
+
     db.commit()
     db.refresh(order)
     return order
 
 
-def _apply_stock(db: Session, order: Order, sign: int) -> None:
+def _apply_stock(db: Session, order: Order, sign: int) -> list[Product]:
+    """Adjust stock for every line. Returns products that hit their low-stock alert."""
+    low_stock: list[Product] = []
     for item in order.items:
         product = db.get(Product, item.product_id)
         if product is None:
@@ -196,3 +222,10 @@ def _apply_stock(db: Session, order: Order, sign: int) -> None:
                 f"'{product.name_uz}' no longer has enough stock to confirm",
             )
         product.stock_qty += sign * item.quantity
+        if (
+            sign < 0
+            and product.low_stock_threshold > 0
+            and product.stock_qty <= product.low_stock_threshold
+        ):
+            low_stock.append(product)
+    return low_stock

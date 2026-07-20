@@ -31,11 +31,12 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _discount = TextEditingController(text: '0');
   final _minQty = TextEditingController(text: '1');
   final _stock = TextEditingController(text: '0');
+  final _lowStock = TextEditingController(text: '0');
   int? _categoryId;
   bool _saving = false;
   bool _initialized = false;
   bool _uploading = false;
-  List<String> _images = [];
+  List<ProductImage> _images = [];
 
   bool get _isEdit => widget.productId != null;
 
@@ -55,8 +56,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         _discount.text = '${p.discountPercent}';
         _minQty.text = '${p.minOrderQty}';
         _stock.text = '${p.stockQty}';
+        _lowStock.text = '${p.lowStockThreshold}';
         _categoryId = p.categoryId;
-        _images = List.of(p.images);
+        _images = List.of(p.imageList);
       }
     }
   }
@@ -71,10 +73,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     setState(() => _uploading = true);
     try {
       final bytes = await picked.readAsBytes();
-      final url = await ref
+      final img = await ref
           .read(factoryRepositoryProvider)
           .uploadImage(widget.productId!, bytes, picked.name);
-      setState(() => _images = [..._images, url]);
+      setState(() => _images = [..._images, img]);
       ref.invalidate(factoryProductsProvider);
     } on ApiException catch (e) {
       if (mounted) {
@@ -82,6 +84,18 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       }
     } finally {
       if (mounted) setState(() => _uploading = false);
+    }
+  }
+
+  Future<void> _deletePhoto(ProductImage img) async {
+    try {
+      await ref.read(factoryRepositoryProvider).deleteImage(widget.productId!, img.id);
+      setState(() => _images = _images.where((e) => e.id != img.id).toList());
+      ref.invalidate(factoryProductsProvider);
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
     }
   }
 
@@ -97,13 +111,29 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              for (final url in _images)
+              for (final img in _images)
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(AppConfig.mediaUrl(url),
-                        width: 88, height: 88, fit: BoxFit.cover),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(AppConfig.mediaUrl(img.url),
+                            width: 88, height: 88, fit: BoxFit.cover),
+                      ),
+                      Positioned(
+                        top: 2, right: 2,
+                        child: GestureDetector(
+                          onTap: () => _deletePhoto(img),
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: const BoxDecoration(
+                              color: Colors.black54, shape: BoxShape.circle),
+                            child: const Icon(Icons.close, size: 15, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               GestureDetector(
@@ -134,7 +164,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
   @override
   void dispose() {
-    for (final c in [_nameUz, _nameRu, _nameEn, _descUz, _price, _discount, _minQty, _stock]) {
+    for (final c in [_nameUz, _nameRu, _nameEn, _descUz, _price, _discount, _minQty, _stock, _lowStock]) {
       c.dispose();
     }
     super.dispose();
@@ -159,6 +189,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       'discount_percent': int.tryParse(_discount.text.trim()) ?? 0,
       'min_order_qty': int.tryParse(_minQty.text.trim()) ?? 1,
       'stock_qty': int.tryParse(_stock.text.trim()) ?? 0,
+      'low_stock_threshold': int.tryParse(_lowStock.text.trim()) ?? 0,
     };
     try {
       final repo = ref.read(factoryRepositoryProvider);
@@ -218,6 +249,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 _text(_discount, 'factory.field_discount'.tr(), number: true),
                 _text(_minQty, 'factory.field_min_qty'.tr(), number: true, required: true),
                 _text(_stock, 'factory.field_stock'.tr(), number: true, required: true),
+                _text(_lowStock, 'factory.field_low_stock'.tr(), number: true),
                 const SizedBox(height: 20),
                 FilledButton(
                   onPressed: _saving ? null : _save,

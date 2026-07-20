@@ -27,6 +27,20 @@ class OrderItem {
       );
 }
 
+class OrderEvent {
+  OrderEvent({required this.status, this.actorRole, required this.createdAt});
+
+  final String status;
+  final String? actorRole;
+  final DateTime createdAt;
+
+  factory OrderEvent.fromJson(Map<String, dynamic> j) => OrderEvent(
+        status: j['status'] as String,
+        actorRole: j['actor_role'] as String?,
+        createdAt: DateTime.tryParse(j['created_at']?.toString() ?? '') ?? DateTime.now(),
+      );
+}
+
 class Order {
   Order({
     required this.id,
@@ -38,6 +52,10 @@ class Order {
     required this.comment,
     required this.createdAt,
     required this.items,
+    this.shippingName,
+    this.shippingPhone,
+    this.shippingAddress,
+    this.events = const [],
   });
 
   final int id;
@@ -49,8 +67,13 @@ class Order {
   final String? comment;
   final DateTime createdAt;
   final List<OrderItem> items;
+  final String? shippingName;
+  final String? shippingPhone;
+  final String? shippingAddress;
+  final List<OrderEvent> events;
 
   bool get canBuyerCancel => status == 'new';
+  bool get hasShipping => (shippingAddress ?? '').isNotEmpty;
 
   factory Order.fromJson(Map<String, dynamic> j) => Order(
         id: j['id'] as int,
@@ -62,5 +85,12 @@ class Order {
         comment: j['comment'] as String?,
         createdAt: DateTime.tryParse(j['created_at']?.toString() ?? '') ?? DateTime.now(),
         items: (j['items'] as List).map((e) => OrderItem.fromJson(e as Map<String, dynamic>)).toList(),
+        shippingName: j['shipping_name'] as String?,
+        shippingPhone: j['shipping_phone'] as String?,
+        shippingAddress: j['shipping_address'] as String?,
+        events: (j['events'] as List?)
+                ?.map((e) => OrderEvent.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
       );
 }

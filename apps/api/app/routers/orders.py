@@ -1,13 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.database import get_db
 from app.core.deps import get_active_user
-from app.models import Order, User
+from app.models import Company, Order, User
 from app.models.enums import BUYER_ROLES, OrderStatus, UserRole
 from app.schemas.common import Message, Page
-from app.schemas.order import CheckoutIn, CheckoutOut, OrderOut, StatusUpdateIn
+from app.schemas.order import (
+    CheckoutIn,
+    CheckoutOut,
+    OrderDetailOut,
+    OrderOut,
+    StatusUpdateIn,
+)
 from app.services import orders as order_service
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -35,7 +41,7 @@ def checkout(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={"code": "forbidden", "message": "Only buyers can checkout"},
         )
-    created = order_service.checkout(db, user, payload.comment)
+    created = order_service.checkout(db, user, payload.comment, payload.address_id)
     return CheckoutOut(orders=[OrderOut.model_validate(o) for o in created])
 
 
@@ -74,7 +80,9 @@ def list_orders(
 
 def _get_visible_order(db: Session, user: User, order_id: int) -> Order:
     order = db.scalars(
-        select(Order).where(Order.id == order_id).options(selectinload(Order.items))
+        select(Order)
+        .where(Order.id == order_id)
+        .options(selectinload(Order.items), selectinload(Order.events))
     ).first()
     if order is None:
         raise HTTPException(
@@ -99,13 +107,33 @@ def _forbidden() -> HTTPException:
     )
 
 
-@router.get("/{order_id}", response_model=OrderOut)
+@router.get("/{order_id}", response_model=OrderDetailOut)
 def get_order(
     order_id: int,
     db: Session = Depends(get_db),
     user: User = Depends(get_active_user),
 ) -> Order:
     return _get_visible_order(db, user, order_id)
+
+
+@router.get("/{order_id}/invoice")
+def order_invoice(
+    order_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_active_user),
+) -> Response:
+    """Download the order as a PDF invoice (hisob-faktura)."""
+    from app.services.invoice import render_invoice_pdf
+
+    order = _get_visible_order(db, user, order_id)
+    factory = db.get(Company, order.factory_id)
+    buyer = db.get(User, order.buyer_id)
+    pdf = render_invoice_pdf(order, factory, buyer)
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="invoice-{order.id}.pdf"'},
+    )
 
 
 @router.patch("/{order_id}/status", response_model=OrderOut)

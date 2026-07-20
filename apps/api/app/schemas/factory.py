@@ -17,6 +17,7 @@ class ProductCreateIn(BaseModel):
     discount_percent: int = Field(default=0, ge=0, le=100)
     min_order_qty: int = Field(default=1, ge=1)
     stock_qty: int = Field(default=0, ge=0)
+    low_stock_threshold: int = Field(default=0, ge=0)
 
 
 class ProductUpdateIn(BaseModel):
@@ -32,6 +33,7 @@ class ProductUpdateIn(BaseModel):
     discount_percent: int | None = Field(default=None, ge=0, le=100)
     min_order_qty: int | None = Field(default=None, ge=1)
     stock_qty: int | None = Field(default=None, ge=0)
+    low_stock_threshold: int | None = Field(default=None, ge=0)
     is_active: bool | None = None
 
 
@@ -50,6 +52,7 @@ class FactoryProductOut(BaseModel):
     sale_price: Decimal
     min_order_qty: int
     stock_qty: int
+    low_stock_threshold: int
     is_active: bool
     is_featured: bool
     images: list[ProductImageOut]

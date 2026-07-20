@@ -35,12 +35,24 @@ class FactoryRepository {
     return FactoryAnalytics.fromJson(resp.data as Map<String, dynamic>);
   }
 
-  /// Uploads a product image (multipart) and returns its public URL.
-  Future<String> uploadImage(int productId, List<int> bytes, String filename) async {
+  /// Uploads a product image (multipart) and returns it (id + url).
+  Future<ProductImage> uploadImage(int productId, List<int> bytes, String filename) async {
     final form = FormData.fromMap({
       'file': MultipartFile.fromBytes(bytes, filename: filename),
     });
     final resp = await _api.dio.post('/factory/products/$productId/images', data: form);
-    return resp.data['url'] as String;
+    return ProductImage.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<void> deleteImage(int productId, int imageId) =>
+      _api.delete('/factory/products/$productId/images/$imageId');
+
+  /// Imports products from an uploaded CSV/XLSX file. Returns the summary map.
+  Future<Map<String, dynamic>> importProducts(List<int> bytes, String filename) async {
+    final form = FormData.fromMap({
+      'file': MultipartFile.fromBytes(bytes, filename: filename),
+    });
+    final resp = await _api.dio.post('/factory/products/import', data: form);
+    return resp.data as Map<String, dynamic>;
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/api/api_exception.dart';
+import '../../../core/download/download_service.dart';
 import '../../../core/format.dart';
+import '../../../core/theme.dart';
 import '../../../providers.dart';
 import '../../../shared/widgets/async_views.dart';
 import '../../../shared/widgets/status_badge.dart';
@@ -33,11 +35,34 @@ class FactoryOrderDetailScreen extends ConsumerWidget {
     }
   }
 
+  Future<void> _downloadInvoice(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(downloadServiceProvider).download(
+            '/orders/$orderId/invoice',
+            'hisob-faktura-$orderId.pdf',
+            'application/pdf',
+          );
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(orderDetailProvider(orderId));
     return Scaffold(
-      appBar: AppBar(title: Text('orders.order_no'.tr(args: ['$orderId']))),
+      appBar: AppBar(
+        title: Text('orders.order_no'.tr(args: ['$orderId'])),
+        actions: [
+          IconButton(
+            tooltip: 'orders.download_invoice'.tr(),
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            onPressed: () => _downloadInvoice(context, ref),
+          ),
+        ],
+      ),
       body: async.when(
         loading: () => const LoadingView(),
         error: (e, _) => ErrorView(
@@ -57,6 +82,30 @@ class FactoryOrderDetailScreen extends ConsumerWidget {
                       child: OrderStatusBadge(status: o.status),
                     ),
                     const SizedBox(height: 12),
+                    if (o.hasShipping)
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.location_on, color: AppTheme.accent, size: 20),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if ((o.shippingName ?? '').isNotEmpty)
+                                      Text('${o.shippingName} · ${o.shippingPhone ?? ''}',
+                                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                                    Text(o.shippingAddress ?? ''),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     for (final item in o.items)
                       Card(
                         child: ListTile(

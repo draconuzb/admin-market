@@ -107,6 +107,58 @@
         return JSON.stringify(sub);
       },
     };
+
+    // ── File picker (bulk product import) ──
+    window._pickFile = function (accept) {
+      return new Promise(function (resolve) {
+        var settled = false;
+        var input = document.createElement('input');
+        input.type = 'file';
+        if (accept) input.accept = accept;
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        function cleanup() { if (input.parentNode) input.parentNode.removeChild(input); }
+        input.onchange = function () {
+          var f = input.files && input.files[0];
+          if (!f) { settled = true; cleanup(); resolve(null); return; }
+          var reader = new FileReader();
+          reader.onload = function () {
+            settled = true; cleanup();
+            var b64 = String(reader.result).split(',')[1] || '';
+            resolve(JSON.stringify({ name: f.name, data: b64 }));
+          };
+          reader.onerror = function () { settled = true; cleanup(); resolve(null); };
+          reader.readAsDataURL(f);
+        };
+        // Cancel fallback: window refocuses with no file chosen.
+        window.addEventListener('focus', function onFocus() {
+          window.removeEventListener('focus', onFocus);
+          setTimeout(function () { if (!settled) { cleanup(); resolve(null); } }, 600);
+        });
+        input.click();
+      });
+    };
+
+    // ── File download (invoices, Excel exports) ──
+    window._download = function (filename, base64, mime) {
+      try {
+        var bin = atob(base64);
+        var arr = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        var blob = new Blob([arr], { type: mime || 'application/octet-stream' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>

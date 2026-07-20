@@ -87,6 +87,15 @@ class ApiClient {
 
   Future<Response> delete(String path) => _guard(() => dio.delete(path));
 
+  /// Fetches a binary payload (PDF, xlsx, csv) with auth, as raw bytes.
+  Future<List<int>> getBytes(String path, {Map<String, dynamic>? query}) async {
+    return _guard(() => dio.get(
+          path,
+          queryParameters: query,
+          options: Options(responseType: ResponseType.bytes),
+        )).then((r) => (r.data as List<int>));
+  }
+
   Future<Response> _guard(Future<Response> Function() call) async {
     try {
       return await call();

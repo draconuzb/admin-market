@@ -17,6 +17,14 @@ class OrderItemOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class OrderEventOut(BaseModel):
+    status: OrderStatus
+    actor_role: str | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class OrderOut(BaseModel):
     id: int
     buyer_id: int
@@ -26,6 +34,9 @@ class OrderOut(BaseModel):
     commission_percent: Decimal
     commission_amount: Decimal
     comment: str | None
+    shipping_name: str | None = None
+    shipping_phone: str | None = None
+    shipping_address: str | None = None
     created_at: datetime
     updated_at: datetime
     items: list[OrderItemOut]
@@ -33,8 +44,14 @@ class OrderOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class OrderDetailOut(OrderOut):
+    # Status history for the timeline (single-order view only).
+    events: list[OrderEventOut] = []
+
+
 class CheckoutIn(BaseModel):
     comment: str | None = None
+    address_id: int | None = None
 
 
 class CheckoutOut(BaseModel):

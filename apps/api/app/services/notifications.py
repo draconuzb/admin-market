@@ -54,6 +54,16 @@ def notify_new_order(db: Session, factory_user_id: int, order_id: int) -> None:
     )
 
 
+def notify_low_stock(db: Session, factory_user_id: int, product_name: str, stock: int) -> None:
+    notify(
+        db,
+        factory_user_id,
+        type_="low_stock",
+        title="Tovar kam qoldi",
+        body=f"'{product_name}' zaxirasi kam qoldi: {stock} dona.",
+    )
+
+
 def notify_approved(db: Session, user_id: int) -> None:
     notify(
         db,

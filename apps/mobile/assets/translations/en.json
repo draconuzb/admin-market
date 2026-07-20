@@ -10,7 +10,11 @@
     "confirm": "Confirm",
     "search": "Search",
     "currency": "so'm",
-    "logout": "Log out"
+    "logout": "Log out",
+    "required": "Required field",
+    "ok": "OK",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "language": {
     "title": "Select language",
@@ -122,6 +126,8 @@
     "cancel_order": "Cancel order",
     "reorder": "Reorder",
     "reordered": "Items added to cart",
+    "timeline": "Order history",
+    "download_invoice": "Download invoice",
     "status": {
       "new": "New",
       "confirmed": "Confirmed",
@@ -176,7 +182,38 @@
     "field_min_qty": "Min order qty",
     "field_stock": "Stock",
     "field_active": "Active",
-    "field_discount": "Discount (%)"
+    "field_discount": "Discount (%)",
+    "field_low_stock": "Low-stock threshold (0 = off)",
+    "low_stock": "Low",
+    "export_products": "Export products (Excel)",
+    "export_orders": "Export orders (Excel)",
+    "import_products": "Import from Excel",
+    "import_template": "Template",
+    "import_result": "Import result",
+    "import_created": "Created: {}",
+    "import_updated": "Updated: {}",
+    "import_errors": "Errors: {}",
+    "import_row": "Row"
+  },
+  "address": {
+    "title": "My addresses",
+    "add": "Add address",
+    "edit": "Edit address",
+    "empty": "No saved addresses",
+    "default": "Default",
+    "make_default": "Make default",
+    "set_default": "Set as default address",
+    "delete_confirm": "Delete address?",
+    "select": "Select delivery address",
+    "delivery": "Delivery address",
+    "label": "Label",
+    "label_hint": "Warehouse, Shop...",
+    "full_name": "Recipient",
+    "phone": "Phone",
+    "region": "Region",
+    "district": "District",
+    "street": "Street, house",
+    "landmark": "Landmark"
   },
   "admin": {
     "nav_registrations": "Registrations",
@@ -199,6 +236,7 @@
     "orders_count": "Orders count",
     "gmv": "GMV",
     "commission_total": "Total commission",
+    "export_orders": "Export orders",
     "no_company": "—"
   },
   "push": {

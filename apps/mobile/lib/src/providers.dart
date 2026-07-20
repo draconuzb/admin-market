@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/api/dio_client.dart';
 import 'core/storage.dart';
+import 'features/addresses/addresses_repository.dart';
 import 'features/admin/admin_repository.dart';
 import 'features/auth/auth_controller.dart';
 import 'features/auth/auth_repository.dart';
@@ -43,6 +44,9 @@ final cartRepositoryProvider =
 
 final ordersRepositoryProvider =
     Provider<OrdersRepository>((ref) => OrdersRepository(ref.watch(apiClientProvider)));
+
+final addressesRepositoryProvider =
+    Provider<AddressesRepository>((ref) => AddressesRepository(ref.watch(apiClientProvider)));
 
 final factoryRepositoryProvider =
     Provider<FactoryRepository>((ref) => FactoryRepository(ref.watch(apiClientProvider)));

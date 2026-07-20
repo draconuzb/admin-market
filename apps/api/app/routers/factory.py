@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Response, UploadFile, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -129,6 +129,133 @@ async def add_product_image(
     db.commit()
     db.refresh(image)
     return image
+
+
+@router.delete("/products/{product_id}/images/{image_id}", response_model=Message)
+def delete_product_image(
+    product_id: int,
+    image_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(factory_guard),
+) -> Message:
+    product = _own_product(db, user, product_id)
+    image = next((img for img in product.images if img.id == image_id), None)
+    if image is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "image_not_found", "message": "Image not found"},
+        )
+    db.delete(image)
+    db.commit()
+    return Message(code="image_deleted", message="Image deleted")
+
+
+# ── Export / import ────────────────────────────────────────────────────────
+def _export_response(headers, rows, fmt: str, base: str, sheet: str) -> Response:
+    from app.services.exports import MEDIA_TYPES, write_table
+
+    if fmt not in MEDIA_TYPES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "bad_format", "message": "format must be csv or xlsx"},
+        )
+    data = write_table(headers, rows, fmt, sheet)
+    return Response(
+        content=data,
+        media_type=MEDIA_TYPES[fmt],
+        headers={"Content-Disposition": f'attachment; filename="{base}.{fmt}"'},
+    )
+
+
+@router.get("/orders/export")
+def export_orders(
+    fmt: str = Query(default="xlsx", alias="format"),
+    db: Session = Depends(get_db),
+    user: User = Depends(factory_guard),
+) -> Response:
+    company = _company(db, user)
+    orders = list(
+        db.scalars(
+            select(Order)
+            .where(Order.factory_id == company.id)
+            .options(selectinload(Order.items))
+            .order_by(Order.id.desc())
+        )
+    )
+    headers = ["ID", "Sana", "Holat", "Xaridor", "Telefon", "Manzil",
+               "Pozitsiyalar", "Jami summa", "Komissiya"]
+    rows = [
+        [
+            o.id,
+            o.created_at.strftime("%Y-%m-%d %H:%M"),
+            o.status.value,
+            o.shipping_name or "",
+            o.shipping_phone or "",
+            o.shipping_address or "",
+            sum(it.quantity for it in o.items),
+            float(o.total_amount),
+            float(o.commission_amount),
+        ]
+        for o in orders
+    ]
+    return _export_response(headers, rows, fmt, "buyurtmalar", "Buyurtmalar")
+
+
+@router.get("/products/export")
+def export_products(
+    fmt: str = Query(default="xlsx", alias="format"),
+    db: Session = Depends(get_db),
+    user: User = Depends(factory_guard),
+) -> Response:
+    company = _company(db, user)
+    products = list(
+        db.scalars(select(Product).where(Product.factory_id == company.id).order_by(Product.id))
+    )
+    from app.services.product_import import COLUMNS
+
+    rows = [
+        [
+            p.id, p.category_id, p.name_uz, p.name_ru, p.name_en,
+            float(p.price), p.discount_percent, p.min_order_qty, p.stock_qty,
+            p.low_stock_threshold, p.description_uz or "", p.description_ru or "",
+            p.description_en or "",
+        ]
+        for p in products
+    ]
+    return _export_response(COLUMNS, rows, fmt, "mahsulotlar", "Mahsulotlar")
+
+
+@router.get("/products/import-template")
+def import_template(
+    fmt: str = Query(default="xlsx", alias="format"),
+    user: User = Depends(factory_guard),
+) -> Response:
+    from app.services.product_import import COLUMNS
+
+    example = ["", "1", "Namuna mahsulot", "Образец", "Sample",
+               "100000", "0", "1", "50", "5", "", "", ""]
+    return _export_response(COLUMNS, [example], fmt, "shablon", "Shablon")
+
+
+@router.post("/products/import")
+async def import_products_endpoint(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    user: User = Depends(factory_guard),
+) -> dict:
+    from app.services.exports import read_table
+    from app.services.product_import import import_products
+
+    company = _company(db, user)
+    data = await file.read()
+    try:
+        rows = read_table(data, file.filename or "import.csv")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "parse_error", "message": "Could not read the file"},
+        )
+    return import_products(db, company, rows)
 
 
 @router.get("/stats", response_model=FactoryStatsOut)

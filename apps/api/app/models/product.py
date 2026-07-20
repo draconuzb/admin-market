@@ -46,6 +46,8 @@ class Product(Base, TimestampMixin):
     discount_percent: Mapped[int] = mapped_column(Integer, default=0)
     min_order_qty: Mapped[int] = mapped_column(Integer, default=1)
     stock_qty: Mapped[int] = mapped_column(Integer, default=0)
+    # Alert the factory when stock drops to/below this after a sale. 0 = disabled.
+    low_stock_threshold: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
 

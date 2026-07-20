@@ -10,7 +10,11 @@
     "confirm": "Подтвердить",
     "search": "Поиск",
     "currency": "сум",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "required": "Обязательное поле",
+    "ok": "OK",
+    "edit": "Редактировать",
+    "delete": "Удалить"
   },
   "language": {
     "title": "Выберите язык",
@@ -122,6 +126,8 @@
     "cancel_order": "Отменить заказ",
     "reorder": "Повторить заказ",
     "reordered": "Товары добавлены в корзину",
+    "timeline": "История заказа",
+    "download_invoice": "Скачать счёт-фактуру",
     "status": {
       "new": "Новый",
       "confirmed": "Подтверждён",
@@ -176,7 +182,38 @@
     "field_min_qty": "Мин. заказ",
     "field_stock": "Остаток",
     "field_active": "Активен",
-    "field_discount": "Скидка (%)"
+    "field_discount": "Скидка (%)",
+    "field_low_stock": "Порог низкого остатка (0 = выкл)",
+    "low_stock": "Мало",
+    "export_products": "Экспорт товаров (Excel)",
+    "export_orders": "Экспорт заказов (Excel)",
+    "import_products": "Импорт из Excel",
+    "import_template": "Шаблон",
+    "import_result": "Результат импорта",
+    "import_created": "Создано: {}",
+    "import_updated": "Обновлено: {}",
+    "import_errors": "Ошибок: {}",
+    "import_row": "Строка"
+  },
+  "address": {
+    "title": "Мои адреса",
+    "add": "Добавить адрес",
+    "edit": "Редактировать адрес",
+    "empty": "Нет сохранённых адресов",
+    "default": "Основной",
+    "make_default": "Сделать основным",
+    "set_default": "Сделать адресом по умолчанию",
+    "delete_confirm": "Удалить адрес?",
+    "select": "Выберите адрес доставки",
+    "delivery": "Адрес доставки",
+    "label": "Название",
+    "label_hint": "Склад, Магазин...",
+    "full_name": "Получатель",
+    "phone": "Телефон",
+    "region": "Регион",
+    "district": "Район",
+    "street": "Улица, дом",
+    "landmark": "Ориентир"
   },
   "admin": {
     "nav_registrations": "Заявки",
@@ -199,6 +236,7 @@
     "orders_count": "Кол-во заказов",
     "gmv": "Оборот (GMV)",
     "commission_total": "Всего комиссии",
+    "export_orders": "Экспорт заказов",
     "no_company": "—"
   },
   "push": {
