@@ -1,7 +1,7 @@
 name: admin_market
 description: "Admin Market — B2B wholesale marketplace (buyer app)."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.1.0+2
 
 environment:
   sdk: ^3.11.5
