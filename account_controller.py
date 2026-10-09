@@ -17,8 +17,8 @@ def load_env(env_path=".env.tg"):
     return env_vars
 
 ENV = load_env()
-API_ID = int(ENV.get("API_ID", 32094368))
-API_HASH = ENV.get("API_HASH", "62ca43aa1e9b9525f12bcb3924012c9a")
+API_ID = int(ENV["API_ID"])
+API_HASH = ENV["API_HASH"]
 STRING_SESSION = ENV.get("STRING_SESSION", "")
 
 def get_client():

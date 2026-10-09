@@ -6,7 +6,7 @@ Ushbu hujjatda Telegram shaxsiy akkauntini Python (`Telethon`) orqali ulash jara
 
 ## 1. Asosiy Maqsad
 
-Telegram shaxsiy akkauntini (`+998940350990`) dasturiy ravishda Telegram MTProto API ga ulab, uni Python orqali to'liq boshqarish:
+Telegram shaxsiy akkauntini (`+998XXXXXXXXX`) dasturiy ravishda Telegram MTProto API ga ulab, uni Python orqali to'liq boshqarish:
 - Akkaunt profil ma'lumotlarini olish;
 - Chatlar, guruhlar va kanallarni o'qish;
 - Akkaunt nomidan xabarlar yuborish va avtomatlashtirish;
@@ -26,7 +26,7 @@ Ulanish paytida tasdiqlash kodi uzoq vaqt kelmadi. Bunga bir nechta muhim texnik
 ### B. Yangi Ochilgan `api_id` / `api_hash` va Bo'sh Maydonlar
 * **Muammo:** Dastlab `my.telegram.org` dan olingan yangi `api_id: 32670321` ishlatildi, unda `App title` va `Short name` bo'sh qolgan edi.
 * **Texnik Sabab:** Telegram yangi yaratilgan va to'liq ma'lumot kiritilmagan API arizalarini shubhali deb baholab, ularga kod jo'natishni vaqtinchalik muzlatib (silent drop) qo'yishi mumkin.
-* **Yechim:** Serverdagi ishlab turgan taxi loyihasida mavjud bo'lgan, Telegram tizimida uzoq vaqtdan beri tasdiqlangan va ishonchli `API_ID: 32094368` dan foydalanildi.
+* **Yechim:** Serverdagi ishlab turgan taxi loyihasida mavjud bo'lgan, Telegram tizimida uzoq vaqtdan beri tasdiqlangan va ishonchli `API_ID` dan foydalanildi.
 
 ### C. Soket Aloqasining Uzilishi (Socket Disconnect)
 * **Muammo:** Birinchi skript kod so'rab bo'lgach, jarayonni to'xtatgan (`client.disconnect()`).
@@ -58,14 +58,14 @@ except SessionPasswordNeededError:
 ```
 
 ### 2-qadam: Kod va Parolni Kiritish
-- Mobil ilovaga kelgan 5 xonali login kodi: `49069`
+- Mobil ilovaga kelgan 5 xonali login kodi: `*****`
 - Akkauntning 2FA bulutli paroli kiritildi.
 
 ### 3-qadam: Natija va `STRING_SESSION`
 Muvaffaqiyatli kirilgach, Telethon tomonidan bitta matnli xavfsiz sessiya (`STRING_SESSION`) generatsiya qilindi va `.env.tg` fayliga yozildi:
 - **Foydalanuvchi:** NORVEN (`@norven_admin`)
-- **Telegram ID:** `8999024607`
-- **Telefon:** `+998940350990`
+- **Telegram ID:** `<telegram_id>`
+- **Telefon:** `+998XXXXXXXXX`
 
 ---
 

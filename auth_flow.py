@@ -1,12 +1,13 @@
 import asyncio
+import os
 import sys
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.errors import SessionPasswordNeededError, PhoneCodeInvalidError
 
-API_ID = 32094368
-API_HASH = "62ca43aa1e9b9525f12bcb3924012c9a"
-PHONE = "+998940350990"
+API_ID = int(os.environ["API_ID"])
+API_HASH = os.environ["API_HASH"]
+PHONE = os.environ["PHONE_NUMBER"]
 
 async def main():
     print(f"[*] Telegram serveriga ulanmoqda (API_ID: {API_ID})...", flush=True)
